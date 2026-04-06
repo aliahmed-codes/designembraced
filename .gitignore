@@ -1,0 +1,39 @@
+# 🔥 Node modules (never upload)
+node_modules/
+
+# 🔐 Environment variables
+.env
+.env.*
+
+# 📦 Build output
+public/
+dist/
+build/
+
+# 🧠 Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 🧹 OS files
+.DS_Store
+Thumbs.db
+
+# 🧪 Coverage / testing
+coverage/
+
+# ⚙️ Editor settings
+.vscode/
+.idea/
+
+# 🧵 Gulp cache (if any plugins create it)
+.cache/
+
+# 🚀 Temporary files
+tmp/
+temp/
+
+# 🔑 Sanity (important)
+.sanity/
