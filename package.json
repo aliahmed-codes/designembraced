@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx gulp",
-    "serve": "nodemon src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "gulp"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +14,12 @@
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.2",
     "browser-sync": "^3.0.4",
+    "concurrently": "^9.2.1",
     "del": "^8.0.1",
     "gulp": "^5.0.1",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
+    "gulp-nodemon": "^2.5.0",
     "gulp-plumber": "^1.2.1",
     "gulp-pug": "^5.0.0",
     "gulp-sass": "^6.0.1",

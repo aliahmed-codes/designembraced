@@ -9,14 +9,17 @@ const browserSync = require('browser-sync').create();
 const { deleteAsync } = require('del');
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
-
+const nodemon = require('gulp-nodemon');
 
 const paths = {
     styles: 'src/styles/**/*.scss',
     scripts: 'src/scripts/**/*.js',
     views: 'src/views/pages/**/*.pug',
+    allViews: 'src/views/**/*.pug',
     assets: 'src/assets/**/*'
 };
+
+const port = 3000
 
 function styles() {
     return src(paths.styles)
@@ -25,7 +28,7 @@ function styles() {
         .pipe(sass({ outputStyle: 'compressed' }))
         .pipe(sourcemaps.write('.'))
         .pipe(dest('public/css'))
-        .pipe(browserSync.stream());
+        .pipe(browserSync.stream({ stream: true }));
 }
 
 function views() {
@@ -33,7 +36,7 @@ function views() {
         .pipe(plumber())
         .pipe(pug({ pretty: true }))
         .pipe(dest('public'))
-        .pipe(browserSync.stream());
+        .on('end', browserSync.reload);
 }
 
 function scripts() {
@@ -47,7 +50,7 @@ function scripts() {
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(dest('public/js'))
-        .pipe(browserSync.stream());
+        .pipe(browserSync.stream({ stream: true }));
 }
 
 function assets() {
@@ -59,26 +62,42 @@ async function clean() {
     return await deleteAsync(['public']);
 }
 
-function serve() {
+function server(cb) {
+    let started = false;
+
+    return nodemon({
+        script: 'src/app.js',
+        watch: ['src'],
+        ext: 'js json',
+        ignore: ['src/styles/**', 'src/scripts/**', 'src/views/**', 'public/**', 'node_modules/**']
+    }).on('start', function () {
+        if (!started) {
+            cb();
+            started = true;
+        }
+    }).on('restart', function () {
+        setTimeout(() => browserSync.reload({ stream: false }), 1000);
+    });
+}
+
+function serve(cb) {
     browserSync.init({
-        server: {
-            baseDir: 'public',
-        },
-        port: 3030,
+        proxy: `http://localhost:${port}`,
+        port: 4000,
         ui: {
-            port: 3031,
+            port: 4001,
         },
-        open: false,
-        notify: false
+        open: 'local'
     });
 
     watch(paths.styles, styles);
     watch(paths.scripts, scripts);
-    watch(paths.views, views);
+    watch(paths.allViews, views);
 }
 
 exports.default = series(
     clean,
     parallel(styles, scripts, views, assets),
+    server,
     serve
 );
