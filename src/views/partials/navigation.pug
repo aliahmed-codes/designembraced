@@ -1,3 +1,4 @@
+//- nav.navigation.preloading
 nav.navigation
     .navigation_wrapper    
         .navigation_logo
@@ -25,7 +26,7 @@ nav.navigation
                 .social_wrapper     
                     each social in navigation.socials
                         a(href=social.url) 
-                          span= social.label
+                            span= social.label
 
         .navigation_menu     
             a(href=navigation.menuLinks.workLabel class=(page === 'home' ? 'active' : ''))

@@ -5,3 +5,9 @@
   top: 0;
   position: absolute;
 }
+
+%center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

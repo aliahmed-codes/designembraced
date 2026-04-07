@@ -1,1 +1,7 @@
-console.log("ali ahmed");
+class App {
+    constructor() {
+
+    }
+}
+
+new App()

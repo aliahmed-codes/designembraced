@@ -1,0 +1,45 @@
+@use "../utils/mixins" as *;
+
+@use "../shared/titles" as *;
+
+.preloader {
+  @extend %cover;
+  @extend %center;
+
+  padding: 2.8rem;
+
+  .preloader_wrapper {
+    @extend %center;
+
+    height: 100%;
+    width: 100%;
+    position: relative;
+    justify-content: space-between;
+
+    .preloader_loading_media {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .preloader_loading_line {
+      width: 100%;
+      height: 100%;
+      background-color: currentColor;
+      height: 0.1rem;
+      z-index: 1;
+    }
+
+    .preloader_text {
+      @extend %title-120;
+
+      text-align: right;
+      padding-left: 3.5rem;
+
+      span {
+        display: block;
+      }
+    }
+  }
+}

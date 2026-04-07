@@ -5,6 +5,7 @@
 *::after,
 *::before {
   box-sizing: border-box;
+  color: currentColor;
 }
 
 html {
@@ -19,6 +20,7 @@ html {
 body {
   font-family: $font-modern-era-mono;
   background: $color-super-silver;
+  color: $color-dark-void;
 }
 
 a {

@@ -29,13 +29,21 @@ const client = createClient({
 
 
 const handleRequest = async () => {
-    const home = await client.fetch(`*[_type == "home"]`);
-    const about = await client.fetch(`*[_type == "about"]`);
+    const home = await client.fetch(`*[_type == "home"][0]`);
+    const about = await client.fetch(`*[_type == "about"][0]`);
     const projects = await client.fetch(`*[_type == "case"]`);
     const navigation = await client.fetch(`*[_id == "navigation"][0]`);
     const footer = await client.fetch(`*[_id == "footer"][0]`);
 
     return { home, about, navigation, projects, footer }
+
+}
+
+
+const colorHandle = (page) => {
+    const { backgroundColor, textColor } = page.colors
+
+    return { backgroundColor, textColor }
 
 }
 
@@ -46,8 +54,10 @@ app.get('/', async (req, res) => {
     const page = 'home'
 
     const defaults = await handleRequest()
+    const colors = colorHandle(defaults.home)
 
-    res.render('pages/home', { ...defaults, page });
+
+    res.render('pages/home', { ...defaults, page, colors });
 });
 
 /**
@@ -57,9 +67,9 @@ app.get('/about', async (req, res) => {
     const page = 'about'
 
     const defaults = await handleRequest()
+    const colors = colorHandle(defaults.about)
 
-
-    res.render('pages/about', { ...defaults, page });
+    res.render('pages/about', { ...defaults, page, colors });
 
 });
 
@@ -86,11 +96,15 @@ app.get('/case/:id', async (req, res) => {
     if (!currentProject) {
         return res.status(404).send('Project not found');
     }
+
+    const colors = colorHandle(currentProject)
+
     res.render('pages/case', {
         ...defaults,
         page,
         currentProject,
-        nextProject
+        nextProject,
+        colors
     });
 
 });

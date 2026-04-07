@@ -8,7 +8,6 @@
   @extend %cover;
 
   padding: 2.8rem;
-  color: $color-dark-void;
   height: auto;
 
   .navigation_wrapper {
@@ -93,5 +92,13 @@
         display: inline;
       }
     }
+  }
+
+  &.preloading &_wrapper > * {
+    opacity: 0;
+  }
+
+  &.preloading &_wrapper .navigation_logo {
+    opacity: 1;
   }
 }
