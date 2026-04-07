@@ -12,7 +12,8 @@ const plumber = require('gulp-plumber');
 const nodemon = require('gulp-nodemon');
 
 const paths = {
-    styles: 'src/styles/**/*.scss',
+    styles: 'src/styles/main.scss',
+    watchStyles: 'src/styles/**/*.scss',
     scripts: 'src/scripts/**/*.js',
     views: 'src/views/pages/**/*.pug',
     allViews: 'src/views/**/*.pug',
@@ -23,12 +24,18 @@ const port = 3000
 
 function styles() {
     return src(paths.styles)
-        .pipe(plumber())
+        .pipe(plumber({
+            errorHandler: function (err) {
+                console.error(err.message);
+                browserSync.notify(`SCSS Error: ${err.messageOriginal || err.message}`, 10000);
+                this.emit('end');
+            }
+        }))
         .pipe(sourcemaps.init())
         .pipe(sass({ outputStyle: 'compressed' }))
         .pipe(sourcemaps.write('.'))
         .pipe(dest('public/css'))
-        .pipe(browserSync.stream({ stream: true }));
+        .pipe(browserSync.stream({ match: '**/*.css' }));
 }
 
 function views() {
@@ -54,8 +61,8 @@ function scripts() {
 }
 
 function assets() {
-    return src(paths.assets)
-        .pipe(dest('public/assets'));
+    return src(paths.assets, { encoding: false })
+        .pipe(dest('public/assets', { encoding: false }));
 }
 
 async function clean() {
@@ -80,7 +87,7 @@ function server(cb) {
     });
 }
 
-function serve(cb) {
+function serve() {
     browserSync.init({
         proxy: `http://localhost:${port}`,
         port: 4000,
@@ -90,7 +97,7 @@ function serve(cb) {
         open: 'local'
     });
 
-    watch(paths.styles, styles);
+    watch(paths.watchStyles, styles);
     watch(paths.scripts, scripts);
     watch(paths.allViews, views);
 }

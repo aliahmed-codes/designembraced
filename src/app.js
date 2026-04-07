@@ -7,7 +7,7 @@ const port = 3000
 const app = express();
 
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.set('view engine', 'pug');
 console.log(path.join(__dirname));
@@ -17,6 +17,10 @@ app.set('views', path.join(__dirname, "views"));
 
 app.get('/', (req, res) => {
     res.render('pages/home');
+});
+
+app.get('/about', (req, res) => {
+    res.render('pages/about');
 });
 
 app.listen(port, () => {

@@ -1,7 +1,6 @@
-body {
-  background: black;
-}
+@use "base/reset";
+@use "base/fonts";
+@use "base/base";
 
-p {
-  color: green;
-}
+@use "layout/navigation";
+@use "layout/footer";

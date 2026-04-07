@@ -1,0 +1,41 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+html {
+  @extend %cover;
+
+  line-height: 1;
+  position: fixed;
+  overflow: hidden;
+  font-size: 62.5%;
+}
+
+body {
+  font-family: $font-modern-era-mono;
+  background: $color-super-silver;
+}
+
+a {
+  font-family: $font-eudoxus-sans;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+button {
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+
+img {
+  vertical-align: middle;
+}

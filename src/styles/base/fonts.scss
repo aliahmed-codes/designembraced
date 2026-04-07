@@ -1,0 +1,61 @@
+@use "../utils/variables" as *;
+
+@font-face {
+  font-family: $font-modern-era-mono;
+  src:
+    url("/assets/fonts/ModernEraMono-Bold.woff2") format("woff2"),
+    url("/assets/fonts/ModernEraMono-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-modern-era-mono;
+  src:
+    url("/assets/fonts/ModernEraMono-ExtraBold.woff2") format("woff2"),
+    url("/assets/fonts/ModernEraMono-ExtraBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-eudoxus-sans;
+  src:
+    url("/assets/fonts/EudoxusSans-Regular.woff2") format("woff2"),
+    url("/assets/fonts/EudoxusSans-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-modern-era-mono;
+  src:
+    url("/assets/fonts/ModernEraMono-Medium.woff2") format("woff2"),
+    url("/assets/fonts/ModernEraMono-Medium.woff") format("woff");
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-eudoxus-sans;
+  src:
+    url("/assets/fonts/EudoxusSans-Bold.woff2") format("woff2"),
+    url("/assets/fonts/EudoxusSans-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: $font-eudoxus-sans;
+  src:
+    url("/assets/fonts/EudoxusSans-ExtraBold.woff2") format("woff2"),
+    url("/assets/fonts/EudoxusSans-ExtraBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}

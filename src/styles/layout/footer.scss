@@ -1,0 +1,46 @@
+@use "../utils/variables" as *;
+@use "../utils/mixins" as *;
+
+@use "../shared/texts" as *;
+@use "../shared/titles" as *;
+
+.footer {
+  @extend %cover;
+
+  padding: 2.8rem;
+  color: $color-dark-void;
+  height: auto;
+  bottom: 0;
+  top: auto;
+
+  .footer_wrapper {
+    @extend %text-11;
+
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    width: 100%;
+
+    span {
+      @extend %text-11;
+
+      display: block;
+    }
+
+    .copyright {
+      grid-column: 2/4;
+
+      span span {
+        display: inline;
+        font-size: 135%;
+      }
+    }
+    .dev_info {
+      align-items: self-end;
+      display: flex;
+      flex-direction: column;
+      grid-column: -2/-1;
+      justify-content: flex-end;
+    }
+  }
+}

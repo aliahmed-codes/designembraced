@@ -4,6 +4,13 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title My site alpha
+    title Design Embraced
+
+    link(rel="stylesheet" href="/css/main.css")
+
   body 
+    include ./partials/navigation
+
     .content#content(data-template=template)
+      block content
+    include ./partials/footer
