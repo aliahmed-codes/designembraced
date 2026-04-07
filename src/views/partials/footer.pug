@@ -1,11 +1,10 @@
 footer.footer
-    .footer_wrapper     
-        .copyright  
-            span
-                span &copy; 
-                |  design
-
-            span Embraced LTD
-        .dev_info   
-            span C-Nr. 07186749
-            span Dev. PEROZZI
+  .footer_wrapper     
+    .copyright  
+      span
+        span &copy; 
+        |  #{footer.companyName.split(' ')[0]}
+      span= footer.companyName.split(' ').slice(1).join(' ')
+    .dev_info   
+      span= footer.companyNumber
+      span Dev. #{footer.developerName}

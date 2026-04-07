@@ -29,8 +29,13 @@
     "sass": "^1.99.0"
   },
   "dependencies": {
+    "@sanity/client": "^7.20.0",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "gsap": "^3.14.2",
-    "lodash": "^4.18.1"
+    "lodash": "^4.18.1",
+    "method-override": "^3.0.0",
+    "next-sanity-client": "^1.0.8"
   }
 }
