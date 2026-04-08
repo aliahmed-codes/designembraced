@@ -3,26 +3,29 @@
 
 @use "../shared/texts" as *;
 @use "../shared/titles" as *;
+@use "../shared/grid" as *;
 
 .footer {
   @extend %cover;
 
-  padding: 2.8rem;
+  position: fixed;
+  padding: $border-gap;
   height: auto;
   bottom: 0;
   top: auto;
+  z-index: 2;
 
   .footer_wrapper {
+    @extend %grid-8;
     @extend %text-11;
 
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    letter-spacing: -0.043431rem;
     width: 100%;
 
     span {
       @extend %text-11;
 
+      letter-spacing: -0.043431rem;
       display: block;
     }
 

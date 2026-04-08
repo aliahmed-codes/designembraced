@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 
 const { createClient } = require('@sanity/client')
+const imageUrlBuilder = require('@sanity/image-url').default
 
 
 const app = express();
@@ -26,6 +27,12 @@ const client = createClient({
     useCdn: true
 })
 
+const builder = imageUrlBuilder(client)
+
+app.use((req, res, next) => {
+    res.locals.imageUrl = (source) => builder.image(source).url()
+    next()
+})
 
 
 const handleRequest = async () => {

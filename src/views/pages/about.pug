@@ -5,4 +5,68 @@ block variables
 
 block content   
     .about
-    
+        .about_wrapper 
+            figure.about_bg_media
+                img.about_bg_media_image(src=imageUrl(about.backgroundImage))
+
+            .about_banner
+                .about_banner_wrapper   
+                    h1.banner_heading
+                        | #{about.heroText.topLine}
+                        br
+                        | #{about.heroText.middleLine}
+                        br
+                        | #{about.heroText.bottomLine}
+                        br
+                        | #{about.heroText.dateStamp}
+
+            .about_experiences.about_section
+                .about_experiences_wrapper.about_section_wrapper
+                    .section_headings 
+                        .headings_top 
+                            h3=about.profile.yearsLabel
+                            .line_index     
+                                span.line 
+                                p 001
+                        h2.heading_count=about.profile.yearsCount
+
+                    .about_experiences_content.section_content
+                        h2.content_heading!=about.profile.mainTitle.replace(/\n/g, '<br>')
+                        .content_body!=about.profile.bodyText.replace(/\n/g, '<br>')
+                            br
+                            br
+                            a(href=`mailto:${about.profile.contactEmail}`)=about.profile.contactEmail 
+
+
+            .about_brands.about_section
+                .about_brands_wrapper.about_section_wrapper
+                    .section_headings 
+                        .headings_top 
+                            h3=about.brands.brandsLabel
+                            .line_index     
+                                span.line 
+                                p 002
+                        h2.heading_count=about.brands.brandsCount
+
+                    .about_brands_content.section_content
+                        .content_body
+                            each brand in about.brands.brandList
+                                p=brand
+
+            .about_awards.about_section
+                .about_awards_wrapper.about_section_wrapper
+                    .section_headings 
+                        .headings_top 
+                            h3=about.awards.awardsLabel
+                            .line_index     
+                                span.line 
+                                p 003
+                        h2.heading_count=about.awards.awardsCount
+
+                    .about_awards_content.section_content
+                        .content_body
+                            each award in about.awards.awardStats
+                                .award
+                                    p!=award.category.replace(/\n/g, '<br>')
+                                    span.count=award.count
+

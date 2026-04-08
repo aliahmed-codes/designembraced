@@ -1,11 +1,40 @@
 @use "../utils/variables" as *;
 
 %title-120 {
-  font-family: $font-eudoxus-sans;
+  font-family: $font-exodus-sans;
   font-size: 12rem;
   font-weight: 700;
   letter-spacing: -0.48rem;
   line-height: 91.6%;
+}
+
+%title-87 {
+  font-family: $font-exodus-sans;
+  font-size: 8.7rem;
+  font-weight: 700;
+  letter-spacing: -0.1734rem;
+  line-height: 1;
+}
+
+%title-50 {
+  font-family: $font-exodus-sans;
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+%title-40 {
+  font-family: $font-exodus-sans;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+%title-35 {
+  font-family: $font-exodus-sans;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.14;
 }
 
 %title-22 {
@@ -14,4 +43,11 @@
   font-weight: bold;
   letter-spacing: -0.043431rem;
   line-height: 80%;
+}
+
+%title-15 {
+  font-family: $font-modern-era-mono;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
 }

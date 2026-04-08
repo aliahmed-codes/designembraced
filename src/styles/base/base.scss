@@ -1,5 +1,5 @@
-@use "../utils/variables" as *;
-@use "../utils/mixins" as *;
+@use "utils/variables" as *;
+@use "utils/mixins" as *;
 
 *,
 *::after,
@@ -12,8 +12,8 @@ html {
   @extend %cover;
 
   line-height: 1;
-  position: fixed;
-  overflow: hidden;
+  // position: fixed;
+  // overflow: hidden;
   font-size: 62.5%;
 }
 
@@ -24,7 +24,7 @@ body {
 }
 
 a {
-  font-family: $font-eudoxus-sans;
+  font-family: $font-exodus-sans;
   color: inherit;
   text-decoration: none;
   outline: none;
@@ -40,4 +40,8 @@ button {
 
 img {
   vertical-align: middle;
+}
+
+.content {
+  
 }

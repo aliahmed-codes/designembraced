@@ -1,0 +1,143 @@
+@use "utils/mixins" as *;
+@use "utils/variables" as *;
+
+@use "shared/pages" as *;
+@use "shared/titles" as *;
+@use "shared/texts" as *;
+@use "shared/grid" as *;
+
+.about {
+  @extend %page;
+  position: relative;
+
+  .about_wrapper {
+    @extend %cover;
+  }
+
+  .about_bg_media {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    &_image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .about_banner {
+    @extend %grid-8;
+
+    padding: $border-gap;
+    padding-top: 16rem;
+    padding-bottom: 10rem;
+    z-index: 1;
+    position: relative;
+
+    .about_banner_wrapper {
+      grid-column: 5/-1;
+
+      .banner_heading {
+        @extend %title-87;
+      }
+    }
+  }
+
+  .section_headings {
+    grid-column: 2/5;
+
+    .headings_top {
+      display: flex;
+
+      h3 {
+        @extend %title-15;
+      }
+
+      .line_index {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        align-items: self-start;
+        height: 100%;
+
+        .line {
+          transform-origin: left;
+          width: 100%;
+          height: 0.1rem;
+          background: $color-goshawk-grey;
+          top: 0.5rem;
+          position: relative;
+        }
+
+        p {
+          @extend %text-11;
+        }
+      }
+    }
+
+    .heading_count {
+      @extend %title-50;
+
+      padding-top: 0.5rem;
+    }
+  }
+
+  .about_section {
+    padding-inline: $border-gap;
+    z-index: 1;
+    position: relative;
+    padding-bottom: 10rem;
+  }
+
+  .about_section_wrapper {
+    @extend %grid-8;
+  }
+
+  .section_content {
+    grid-column: 5/-2;
+  }
+
+  .about_experiences_content {
+    .content_heading {
+      @extend %title-35;
+    }
+
+    .content_body {
+      @extend %text-11;
+
+      margin-top: 2.7rem;
+      max-width: 70%;
+      font-weight: 700;
+
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .about_awards_content,
+  .about_brands_content {
+    .content_body {
+      @extend %grid-3;
+      gap: 0;
+
+      p {
+        @extend %text-11;
+      }
+
+      .count {
+        @extend %title-40;
+      }
+    }
+  }
+
+  .about_awards_content {
+    .content_body {
+      row-gap: 7rem;
+    }
+  }
+}
