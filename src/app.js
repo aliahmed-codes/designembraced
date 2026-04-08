@@ -27,18 +27,23 @@ const client = createClient({
     useCdn: true
 })
 
+
+/**
+ * Image builder.
+ */
 const builder = imageUrlBuilder(client)
 
-app.use((req, res, next) => {
-    res.locals.imageUrl = (source) => builder.image(source).url()
-    next()
-})
 
 
-const handleRequest = async () => {
+
+
+
+
+
+const requestHandle = async () => {
     const home = await client.fetch(`*[_type == "home"][0]`);
     const about = await client.fetch(`*[_type == "about"][0]`);
-    const projects = await client.fetch(`*[_type == "case"]`);
+    const projects = await client.fetch(`*[_type == "case"] | order(caseIndex asc)`);
     const navigation = await client.fetch(`*[_id == "navigation"][0]`);
     const footer = await client.fetch(`*[_id == "footer"][0]`);
 
@@ -54,13 +59,35 @@ const colorHandle = (page) => {
 
 }
 
+const linkHandle = (link) => {
+    if (link._type === 'slug') {
+        return `/case/${link.current}`
+    }
+}
+
+
+
+/**
+ * Middleware.
+ */
+app.use((req, res, next) => {
+    res.locals.Link = linkHandle
+
+
+    res.locals.imageUrl = (source) => builder.image(source).url()
+
+    next()
+})
+
+
+
 /**
  * Home.
  */
 app.get('/', async (req, res) => {
     const page = 'home'
 
-    const defaults = await handleRequest()
+    const defaults = await requestHandle()
     const colors = colorHandle(defaults.home)
 
 
@@ -73,7 +100,7 @@ app.get('/', async (req, res) => {
 app.get('/about', async (req, res) => {
     const page = 'about'
 
-    const defaults = await handleRequest()
+    const defaults = await requestHandle()
     const colors = colorHandle(defaults.about)
 
     res.render('pages/about', { ...defaults, page, colors });
@@ -87,7 +114,7 @@ app.get('/case/:id', async (req, res) => {
     const page = 'case'
     const slug = req.params.id;
 
-    const defaults = await handleRequest()
+    const defaults = await requestHandle()
 
     const query = `{
         "currentProject": *[_type == "case" && slug.current == $slug][0],

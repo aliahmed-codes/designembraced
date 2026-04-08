@@ -1,7 +1,7 @@
 @use "../utils/mixins" as *;
 
 %page {
-  // @extend %cover;
+  @extend %cover;
 
   //   opacity: 0;
   //   visibility: hidden;

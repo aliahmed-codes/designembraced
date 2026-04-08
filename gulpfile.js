@@ -1,7 +1,6 @@
 const { src, dest, watch, series, parallel } = require('gulp');
 
 const sass = require('gulp-sass')(require('sass'));
-const pug = require('gulp-pug');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
@@ -38,12 +37,9 @@ function styles() {
         .pipe(browserSync.stream({ match: '**/*.css' }));
 }
 
-function views() {
-    return src(paths.views)
-        .pipe(plumber())
-        .pipe(pug({ pretty: true }))
-        .pipe(dest('public'))
-        .on('end', browserSync.reload);
+function views(cb) {
+    browserSync.reload();
+    cb();
 }
 
 function scripts() {

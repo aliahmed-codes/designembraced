@@ -5,3 +5,14 @@ block variables
 
 block content   
     .home
+        .home_wrapper
+            .case_gallery
+                .case_gallery_wrapper   
+                    each project, index in projects
+                        a.case_gallery_link(href=Link(project.slug))  
+                            figure.case_gallery_media
+                                img.case_gallery_media_image(src=imageUrl(project.mainBanner) )    
+                                .case_gallery_count_wrapper
+                                    h1.case_gallery_count PR.#{String(index + 1).padStart(2, '0')}   
+                                        span.gallery_total_count /#{String(projects.length).padStart(2, '0')}
+                                    p.case_gallery_name!=project.projectName.replace(/__/g, '<br>')

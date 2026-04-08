@@ -1,0 +1,74 @@
+@use "utils/mixins" as *;
+@use "utils/variables" as *;
+
+@use "shared/pages" as *;
+@use "shared/grid" as *;
+@use "shared/titles" as *;
+@use "shared/texts" as *;
+
+.home {
+  @extend %page;
+  @extend %cover;
+
+  .home_wrapper {
+    height: 100%;
+    width: 100%;
+
+    .case_gallery {
+      @extend %cover;
+
+      .case_gallery_wrapper {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        .case_gallery_link {
+          margin-block: 23vh;
+
+          .case_gallery_media {
+            height: 54vh;
+            aspect-ratio: 1/1;
+            position: relative;
+
+            .case_gallery_media_image {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          .case_gallery_count_wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(69.3%) translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+          }
+
+          .case_gallery_count {
+            @extend %title-120;
+
+            text-align: right;
+            margin-block: 4rem;
+
+            .gallery_total_count {
+              display: block;
+            }
+          }
+
+          .case_gallery_name {
+            @extend %text-15;
+
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
