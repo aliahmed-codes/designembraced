@@ -28,6 +28,7 @@
 
         .case_gallery_link {
           margin-block: 23vh;
+          position: relative;
 
           .case_gallery_media {
             height: 54vh;
@@ -48,24 +49,31 @@
             transform: translateX(69.3%) translateY(-50%);
             display: flex;
             flex-direction: column;
-            pointer-events: none;
+            // pointer-events: none;
           }
 
           .case_gallery_count {
-            @extend %title-120;
+            position: relative;
+            max-width: max-content;
+          }
 
-            text-align: right;
-            margin-block: 4rem;
+          .case_gallery_count_heading {
+            @extend %title-120;
 
             .gallery_total_count {
               display: block;
+              text-align: right;
             }
           }
 
           .case_gallery_name {
             @extend %text-15;
 
-            text-align: right;
+            line-height: 1.3;
+            position: absolute;
+            top: 100%;
+            margin-top: 4rem;
+            right: 0;
           }
         }
       }

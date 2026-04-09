@@ -5,4 +5,54 @@ block variables
 
 block content   
     .case
-        p Case
+        .case_wrapper   
+            .case_hero
+                .case_hero_banner_wrapper
+                    figure.case_banner_media  
+                        img.case_banner_media_image(src=imageUrl(project.mainBanner))
+
+                .case_hero_wrapper
+                    .case_count_wrapper
+                        h1.case_count_heading PR.#{String(project.caseIndex).padStart(2, '0')}   
+                            span.case_total_count /#{String(projects.length).padStart(2, '0')}
+                        p.case_name!=project.projectName.replace(/\n/g, '<br>')
+
+                    .case_info_wrapper 
+                        .case_info
+                            p Project type:
+                            p!=project.projectType.replace(/\n/g, '<br>')
+
+                        .case_info
+                            p Involvement:
+                            p!=project.involvement.replace(/\n/g, '<br>')
+
+                        .case_info
+                            p Date created:
+                            p=project.dateCreated
+
+
+                        .case_info
+                            p Tools:
+                            each tool in project.tools
+                                p=tool
+
+            .case_medias
+                .case_medias_wrapper   
+                    each media in project.caseMedia || []
+                        .case_media_container(class='media_' + (media.layout || 'default'))
+
+                            if media._type === 'image'
+                                figure.case_media
+                                    img.case_media_image(src=imageUrl(media.asset), alt='')
+
+                            else if media._type === 'videoItem'
+                                video.case_media(autoplay muted loop)
+                                    source(src=imageUrl(media.asset) type='video/mp4')
+
+                            .media_count    
+                                span  IMG. 
+                                    span 01/07
+
+
+
+

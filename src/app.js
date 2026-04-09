@@ -136,7 +136,7 @@ app.get('/case/:id', async (req, res) => {
     res.render('pages/case', {
         ...defaults,
         page,
-        currentProject,
+        project: currentProject,
         nextProject,
         colors
     });

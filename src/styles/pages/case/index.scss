@@ -1,0 +1,150 @@
+@use "utils/mixins" as *;
+@use "utils/variables" as *;
+
+@use "shared/pages" as *;
+@use "shared/titles" as *;
+@use "shared/texts" as *;
+@use "shared/grid" as *;
+
+.case {
+  @extend %page;
+  position: relative;
+
+  .case_wrapper {
+    @extend %cover;
+  }
+
+  .case_hero {
+    height: 100vh;
+    width: 100%;
+    padding: $border-gap;
+    position: relative;
+
+    .case_hero_banner_wrapper {
+      @extend %grid-8;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 0;
+      padding-inline: $border-gap;
+      z-index: 0;
+
+      .case_banner_media {
+        grid-column: 3/7;
+
+        &_image {
+          height: 100vh;
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
+    .case_hero_wrapper {
+      @extend %grid-8;
+
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      position: relative;
+
+      .case_count_wrapper {
+        grid-column: 2/4;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        max-height: max-content;
+        max-width: max-content;
+
+        .case_count_heading {
+          @extend %title-120;
+
+          .case_total_count {
+            display: block;
+            text-align: right;
+          }
+        }
+
+        .case_name {
+          @extend %text-15;
+
+          line-height: 1.3;
+          position: absolute;
+          top: 100%;
+          margin-top: 4rem;
+        }
+      }
+
+      .case_info_wrapper {
+        grid-column: 7/-1;
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.6rem;
+
+        .case_info {
+          @extend %text-11;
+
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+
+  .case_medias {
+    padding: $border-gap;
+    width: 100%;
+
+    .case_medias_wrapper {
+      @extend %grid-8;
+
+      margin-top: 17.5rem;
+      max-width: 144rem;
+      margin-inline: auto;
+    }
+
+    .case_media_container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 17.5rem;
+
+      &.media_center {
+        grid-column: 2/-2;
+      }
+
+      &.media_right {
+        grid-column: 4/-2;
+        flex-direction: row-reverse;
+
+        .media_count {
+          margin-right: 1.1rem;
+          margin-left: 0;
+        }
+      }
+
+      &.media_left {
+        grid-column: 2/-4;
+      }
+
+      .case_media {
+        &_image {
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .media_count {
+        margin-left: 1.1rem;
+        max-width: min-content;
+
+        span {
+          @extend %text-11;
+
+          text-align: right;
+        }
+      }
+    }
+  }
+}
