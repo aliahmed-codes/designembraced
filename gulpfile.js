@@ -31,7 +31,12 @@ function styles() {
             }
         }))
         .pipe(sourcemaps.init())
-        .pipe(sass({ outputStyle: 'compressed' }))
+        .pipe(sass({
+            outputStyle: 'compressed',
+            quietDeps: true,
+            includePaths: ['node_modules']
+
+        }))
         .pipe(sourcemaps.write('.'))
         .pipe(dest('public/css'))
         .pipe(browserSync.stream({ match: '**/*.css' }));

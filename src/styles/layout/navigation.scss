@@ -1,5 +1,6 @@
 @use "../utils/mixins" as *;
 @use "../utils/variables" as *;
+@use "../utils/responsive" as *;
 
 @use "../shared/titles" as *;
 @use "../shared/texts" as *;
@@ -22,6 +23,8 @@
     grid-template-columns: repeat(8, minmax(0, 1fr));
     width: 100%;
     letter-spacing: -0.043431rem;
+    z-index: 3;
+    position: relative;
 
     span {
       @extend %text-11;
@@ -57,13 +60,25 @@
       a {
         text-decoration: underline;
       }
+
+      @include media("<=tablet") {
+        display: none;
+      }
     }
 
     .navigation_services {
       grid-column: span 2;
+
+      @include media("<=tablet") {
+        display: none;
+      }
     }
 
     .navigation_social {
+      @include media("<=tablet") {
+        display: none;
+      }
+
       grid-column: span 1;
 
       .social_wrapper {
@@ -74,11 +89,14 @@
 
     .navigation_menu {
       grid-column: span 1;
-
       display: flex;
       justify-content: flex-start;
       align-items: flex-end;
       flex-direction: column;
+
+      @include media("<=tablet") {
+        display: none;
+      }
 
       & a svg {
         opacity: 0;
@@ -96,6 +114,119 @@
 
       span {
         display: inline;
+      }
+    }
+
+    .navigation_hamburger {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      cursor: pointer;
+      gap: 0.5rem;
+      grid-column: -2/-1;
+
+      @include media(">tablet") {
+        display: none;
+      }
+
+      .line {
+        width: 2rem;
+        height: 0.2rem;
+        background-color: currentColor;
+        transform-origin: center;
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+
+  .navigation_content_wrapper {
+    @extend %cover;
+    @extend %center;
+
+    position: fixed;
+    z-index: 2;
+    opacity: 0;
+
+    .navigation_content {
+      @extend %grid-4;
+
+      max-width: 50rem;
+      width: 100%;
+
+      span {
+        @extend %text-11;
+
+        letter-spacing: -0.043431rem;
+        display: block;
+      }
+
+      .navigation_menu {
+        @extend %title-120;
+
+        grid-column: 1/-1;
+        display: flex;
+        flex-direction: column;
+
+        .menu_link {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+
+          svg {
+            margin-right: 10rem;
+
+            @include media("<=phone") {
+              margin-right: auto;
+            }
+          }
+
+          & svg {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+          }
+
+          &.active svg {
+            opacity: 1;
+          }
+        }
+      }
+
+      .navigation_contact {
+        grid-column: span 2;
+
+        a {
+          text-decoration: underline;
+        }
+      }
+
+      .navigation_services {
+        grid-column: span 2;
+      }
+
+      .navigation_social {
+        grid-column: span 2;
+
+        .social_link_wrapper {
+          display: flex;
+          gap: 1rem;
+        }
+      }
+    }
+  }
+
+  &.active {
+    .navigation_content_wrapper {
+      opacity: 1;
+      padding: $border-gap;
+    }
+
+    .navigation_hamburger {
+      .top_line {
+        transform: translateY(0.35rem) rotate(45deg);
+      }
+
+      .bottom_line {
+        transform: translateY(-0.35rem) rotate(-45deg);
       }
     }
   }

@@ -1,5 +1,6 @@
 @use "utils/mixins" as *;
 @use "utils/variables" as *;
+@use "utils/responsive" as *;
 
 @use "shared/pages" as *;
 @use "shared/grid" as *;
@@ -69,6 +70,10 @@
 
           .case_gallery_name {
             @extend %text-15;
+
+            // @include media("<=tablet") {
+            //   display: none;
+            // }
 
             width: 13rem;
             line-height: 1.3;
