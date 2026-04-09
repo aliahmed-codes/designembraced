@@ -144,8 +144,9 @@
     @extend %center;
 
     position: fixed;
-    z-index: 2;
+    z-index: 0;
     opacity: 0;
+    pointer-events: none;
 
     .navigation_content {
       @extend %grid-4;
@@ -218,6 +219,8 @@
     .navigation_content_wrapper {
       opacity: 1;
       padding: $border-gap;
+      z-index: 2;
+      pointer-events: auto;
     }
 
     .navigation_hamburger {

@@ -1,5 +1,6 @@
 @use "../utils/variables" as *;
 @use "../utils/mixins" as *;
+@use "../utils/responsive" as *;
 
 @use "../shared/texts" as *;
 @use "../shared/titles" as *;
@@ -14,6 +15,16 @@
   bottom: 0;
   top: auto;
   z-index: 2;
+
+  @include media("<=tablet") {
+    opacity: 0;
+    pointer-events: none;
+
+    &.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
 
   .footer_wrapper {
     @extend %grid-8;

@@ -28,13 +28,19 @@
         flex-direction: column;
 
         .case_gallery_link {
-          margin-block: 23vh;
           position: relative;
+
+          margin-block: 5vh;
 
           .case_gallery_media {
             height: 54vh;
             aspect-ratio: 1/1;
             position: relative;
+
+            @include media("<=tablet") {
+              height: auto;
+              width: 70vw;
+            }
 
             .case_gallery_media_image {
               width: 100%;
@@ -43,44 +49,61 @@
             }
           }
 
-          .case_gallery_count_wrapper {
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            transform: translateX(-18%) translateY(-50%);
-
-            display: flex;
-            flex-direction: column;
-            // pointer-events: none;
-          }
-
-          .case_gallery_count {
-            position: relative;
-            max-width: max-content;
-          }
-
-          .case_gallery_count_heading {
-            @extend %title-120;
-
-            .gallery_total_count {
-              display: block;
-              text-align: right;
-            }
-          }
-
           .case_gallery_name {
             @extend %text-15;
 
-            // @include media("<=tablet") {
-            //   display: none;
-            // }
-
             width: 13rem;
             line-height: 1.3;
+            margin-top: 3rem;
+          }
+
+          .case_gallery_count_wrapper {
             position: absolute;
-            top: 100%;
-            margin-top: 4rem;
+            top: 50%;
             right: 0;
+            transform: translateX(51%) translateY(-50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            @include media("<=tablet") {
+              transform: translateX(18%) translateY(-50%);
+            }
+
+            .case_gallery_count {
+              position: relative;
+              max-width: max-content;
+            }
+
+            .case_gallery_count_heading {
+              @extend %title-120;
+
+              @include media("<=tablet") {
+                font-size: 6.5rem;
+              }
+
+              .gallery_total_count {
+                display: block;
+                text-align: right;
+              }
+            }
+
+            .case_gallery_name {
+              @extend %text-15;
+
+              @include media("<=tablet") {
+                display: none;
+              }
+
+              width: 13rem;
+              line-height: 1.3;
+              position: absolute;
+              top: 100%;
+              margin-top: 4rem;
+              right: 0;
+            }
           }
         }
       }
