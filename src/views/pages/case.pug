@@ -39,19 +39,19 @@ block content
             .case_medias
                 .case_medias_wrapper   
                     each media in project.caseMedia || []
-                        .case_media_container(class='media_' + (media.layout || 'default'))
+                        .case_media_container(class='media_' + (media.layout || 'video'))
+                            .case_media
+                                if media._type === 'image'
+                                    figure.case_media_media
+                                        img.case_media_media_image(src=imageUrl(media.asset), alt='')
 
-                            if media._type === 'image'
-                                figure.case_media
-                                    img.case_media_image(src=imageUrl(media.asset), alt='')
+                                else if media._type === 'videoItem'
+                                    video.case_media_media(autoplay muted loop)
+                                        source.case_media_media_image(src=media.asset.url type='video/mp4')
 
-                            else if media._type === 'videoItem'
-                                video.case_media(autoplay muted loop)
-                                    source(src=imageUrl(media.asset) type='video/mp4')
-
-                            .media_count    
-                                span  IMG. 
-                                    span 01/07
+                                .media_count    
+                                    span  IMG. 
+                                        span 01/07
 
 
 

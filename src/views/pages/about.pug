@@ -12,13 +12,15 @@ block content
             .about_banner
                 .about_banner_wrapper   
                     h1.banner_heading
-                        | #{about.heroText.topLine}
+                        span= about.heroText.topLine
+                        span.top_line.line
                         br
-                        | #{about.heroText.middleLine}
+                        span.middle_line.line
+                        span= about.heroText.middleLine
                         br
-                        | #{about.heroText.bottomLine}
+                        span= about.heroText.bottomLine
                         br
-                        | #{about.heroText.dateStamp}
+                        span= about.heroText.dateStamp
 
             .about_experiences.about_section
                 .about_experiences_wrapper.about_section_wrapper

@@ -43,6 +43,22 @@
 
       .banner_heading {
         @extend %title-87;
+
+        .line {
+          width: 7rem;
+          height: 1rem;
+          background: currentColor;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        .top_line {
+          margin-left: 2%;
+        }
+
+        .middle_line {
+          margin-right: 2%;
+        }
       }
     }
   }

@@ -75,6 +75,7 @@ app.use((req, res, next) => {
 
 
     res.locals.imageUrl = (source) => builder.image(source).url()
+    res.locals.videoUrl = (source) => builder.image(source).url()
 
     next()
 })
@@ -117,7 +118,17 @@ app.get('/case/:id', async (req, res) => {
     const defaults = await requestHandle()
 
     const query = `{
-        "currentProject": *[_type == "case" && slug.current == $slug][0],
+        "currentProject": *[_type == "case" && slug.current == $slug][0]{
+  ...,
+  caseMedia[]{
+    _type,
+    layout,
+    asset->{
+      _id,
+      url
+    }
+  }
+},
         "nextProject": *[_type == "case" && caseIndex > *[_type == "case" && slug.current == $slug][0].caseIndex] | order(caseIndex asc)[0],
         "firstProject": *[_type == "case"] | order(caseIndex asc)[0]
     }`;

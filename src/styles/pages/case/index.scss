@@ -106,8 +106,6 @@
     }
 
     .case_media_container {
-      display: flex;
-      justify-content: space-between;
       margin-bottom: 17.5rem;
 
       &.media_center {
@@ -116,7 +114,10 @@
 
       &.media_right {
         grid-column: 4/-2;
-        flex-direction: row-reverse;
+
+        .case_media {
+          flex-direction: row-reverse;
+        }
 
         .media_count {
           margin-right: 1.1rem;
@@ -128,7 +129,21 @@
         grid-column: 2/-4;
       }
 
+      &.media_video {
+        grid-column: 2/-2;
+      }
+
       .case_media {
+        display: flex;
+        justify-content: center;
+        max-width: 100%;
+        overflow: hidden;
+      }
+
+      .case_media_media {
+        width: 50%;
+        flex: 1;
+
         &_image {
           width: 100%;
           object-fit: cover;
