@@ -12,6 +12,8 @@ html(lang="en")
     //- include ./partials/preloader
     include ./partials/navigation
 
-    .content#content(data-template=template)
+    .content#content(data-template=template data-backgroundColor=colors.backgroundColor data-color=colors.textColor)
       block content
+
     include ./partials/footer
+    script(src="/js/app.js")

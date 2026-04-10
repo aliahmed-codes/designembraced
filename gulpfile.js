@@ -1,14 +1,18 @@
-const { src, dest, watch, series, parallel } = require('gulp');
+const { dest, watch, series, parallel } = require('gulp');
 
 const sass = require('gulp-sass')(require('sass'));
-const babel = require('gulp-babel');
+const rollup = require('@rollup/stream');
+const resolve = require('@rollup/plugin-node-resolve');
+const commonjs = require('@rollup/plugin-commonjs');
 const uglify = require('gulp-uglify');
-const concat = require('gulp-concat');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
 const browserSync = require('browser-sync').create();
 const { deleteAsync } = require('del');
 const sourcemaps = require('gulp-sourcemaps');
 const plumber = require('gulp-plumber');
 const nodemon = require('gulp-nodemon');
+const { src } = require('gulp');
 
 const paths = {
     styles: 'src/styles/main.scss',
@@ -35,7 +39,6 @@ function styles() {
             outputStyle: 'compressed',
             quietDeps: true,
             includePaths: ['node_modules']
-
         }))
         .pipe(sourcemaps.write('.'))
         .pipe(dest('public/css'))
@@ -48,15 +51,16 @@ function views(cb) {
 }
 
 function scripts() {
-    return src(paths.scripts)
-        .pipe(plumber())
-        .pipe(sourcemaps.init())
-        .pipe(babel({
-            presets: ['@babel/preset-env']
-        }))
-        .pipe(concat('app.js'))
+    return rollup({
+        input: 'src/scripts/app.js',
+        plugins: [resolve.default(), commonjs.default()],
+        output: {
+            format: 'iife'
+        }
+    })
+        .pipe(source('app.js'))
+        .pipe(buffer())
         .pipe(uglify())
-        .pipe(sourcemaps.write('.'))
         .pipe(dest('public/js'))
         .pipe(browserSync.stream({ stream: true }));
 }
