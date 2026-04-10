@@ -53,6 +53,28 @@ block content
                                     span  IMG. 
                                         span 01/07
 
+            .next_case_heading
+                h3 NXT PROJ 
+                p Scroll 
+                span 
+                    svg(xmlns='http://www.w3.org/2000/svg' width='8' height='9' viewbox='0 0 8 9' fill='currentColor')
+                        path(d='M3.67576 8.48122C3.85483 8.66029 4.14517 8.66029 4.32424 8.48122L7.24238 5.56308C7.42145 5.384 7.42145 5.09367 7.24238 4.9146C7.06331 4.73553 6.77298 4.73553 6.59391 4.9146L4 7.50851L1.40609 4.9146C1.22702 4.73553 0.936689 4.73553 0.757617 4.9146C0.578545 5.09367 0.578545 5.384 0.757617 5.56308L3.67576 8.48122ZM3.54146 0.126953L3.54146 8.15698L4.45854 8.15698L4.45854 0.126953L3.54146 0.126953Z')
 
 
+            .next_case
+                .next_case_banner_wrapper
+                    figure.case_banner_media
+                        a.case_banner_media_link(href=Link(nextProject.slug))  
+                            img.case_banner_media_image(src=imageUrl(nextProject.mainBanner))
+                            .case_banner_count_wrapper
+                                .case_banner_count
+                                    h1.case_banner_count_heading PR.#{String(nextProject.caseIndex).padStart(2, '0')}   
+                                        span.banner_total_count /#{String(projects.length).padStart(2, '0')}
+                    p.case_name!=nextProject.projectName.replace(/\n/g, '<br>')
+
+                .next_case_wrapper
+                    .case_count_wrapper
+                        h1.case_count_heading PR.#{String(nextProject.caseIndex).padStart(2, '0')}   
+                            span.case_total_count /#{String(projects.length).padStart(2, '0')}
+                        p.case_name!=nextProject.projectName.replace(/\n/g, '<br>')
 
