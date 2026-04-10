@@ -61,15 +61,16 @@
             position: absolute;
             top: 50%;
             right: 0;
-            transform: translateX(51%) translateY(-50%);
+            transform: translateX(87%) translateY(-50%);
             width: 100%;
             height: 100%;
             display: flex;
-            justify-content: flex-end;
             align-items: center;
+            pointer-events: none;
 
             @include media("<=tablet") {
               transform: translateX(18%) translateY(-50%);
+              justify-content: flex-end;
             }
 
             .case_gallery_count {

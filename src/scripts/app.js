@@ -3,6 +3,9 @@ import About from "./pages/About"
 import Case from "./pages/Case"
 import Home from "./pages/Home"
 
+
+import Navigation from "./components/Navigation"
+
 class App {
 
     constructor() {
@@ -10,8 +13,8 @@ class App {
 
         this.createContent()
 
-
         this.createPages()
+        this.createNavigation()
 
 
         this.addLinkListeners()
@@ -36,6 +39,20 @@ class App {
         this.page = this.pages[this.template]
     }
 
+
+    createNavigation() {
+        this.navigation = new Navigation()
+    }
+
+    // createPreloader() {
+    //     this.preloader = new Preloader()
+    // }
+
+
+
+    /**
+     * Events.
+     */
 
     async onChange({ url }) {
 
