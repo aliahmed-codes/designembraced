@@ -7,6 +7,8 @@
   @extend %center;
 
   padding: 2.8rem;
+  position: fixed;
+  z-index: 1;
 
   .preloader_wrapper {
     @extend %center;
@@ -29,6 +31,8 @@
       background-color: currentColor;
       height: 0.1rem;
       z-index: 1;
+      transform-origin: left;
+      scale: 0;
     }
 
     .preloader_text {

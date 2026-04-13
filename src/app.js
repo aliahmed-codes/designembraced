@@ -34,20 +34,61 @@ const client = createClient({
 const builder = imageUrlBuilder(client)
 
 
+const imageHandle = (source) => {
+    if (!source) return null
+
+    return builder.image(source).url()
+}
 
 
+/**
+ * Handle Assets
+ */
+
+const buildAssets = (about, projects) => {
+    return {
+        aboutBanner: about?.aboutBanner || null,
+
+        projectsAssets: projects.map(project => ({
+            main: project.mainBannerUrl || null,
+
+            media: (project.caseMedia || []).map(media => ({
+                type: media._type === "image" ? "image" : "video",
+                url: media.url || null
+            }))
+        }))
+    };
+};
 
 
-
+/**
+ * Helper.
+ */
 
 const requestHandle = async () => {
     const home = await client.fetch(`*[_type == "home"][0]`);
-    const about = await client.fetch(`*[_type == "about"][0]`);
-    const projects = await client.fetch(`*[_type == "case"] | order(caseIndex asc)`);
+    const about = await client.fetch(`
+    *[_type == "about"][0]{
+    ...,
+    "aboutBanner": backgroundImage.asset->url
+    }
+    `);
+    const projects = await client.fetch(`
+    *[_type == "case"] | order(caseIndex asc){
+    ...,
+    "mainBannerUrl": mainBanner.asset->url,
+    caseMedia[]{
+    ...,
+        "url": asset->url, 
+    }
+    }
+    `);
     const navigation = await client.fetch(`*[_id == "navigation"][0]`);
     const footer = await client.fetch(`*[_id == "footer"][0]`);
 
-    return { home, about, navigation, projects, footer }
+    const assets = buildAssets(about, projects);
+
+    return { assets, home, about, navigation, projects, footer }
 
 }
 
@@ -74,8 +115,7 @@ app.use((req, res, next) => {
     res.locals.Link = linkHandle
 
 
-    res.locals.imageUrl = (source) => builder.image(source).url()
-    res.locals.videoUrl = (source) => builder.image(source).url()
+    res.locals.imageUrl = imageHandle
 
     next()
 })
@@ -118,8 +158,7 @@ app.get('/case/:id', async (req, res) => {
     const defaults = await requestHandle()
 
     const query = `{
-        "currentProject": *[_type == "case" && slug.current == $slug][0]{
-  ...,
+        "currentProject": *[_type == "case" && slug.current == $slug][0]{...,
   caseMedia[]{
     _type,
     layout,

@@ -5,16 +5,17 @@ import Home from "./pages/Home"
 
 
 import Navigation from "./components/Navigation"
+import Preloader from "./components/Preloader"
 
 class App {
 
     constructor() {
 
-
         this.createContent()
 
         this.createPages()
         this.createNavigation()
+        this.createPreloader()
 
 
         this.addLinkListeners()
@@ -44,9 +45,9 @@ class App {
         this.navigation = new Navigation()
     }
 
-    // createPreloader() {
-    //     this.preloader = new Preloader()
-    // }
+    createPreloader() {
+        this.preloader = new Preloader()
+    }
 
 
 
@@ -79,7 +80,7 @@ class App {
             this.content.setAttribute('data-template', this.template)
 
 
-            this.content.innerHTML = div.innerHTML
+            this.content.innerHTML = divContent.innerHTML
 
 
             this.addLinkListeners()

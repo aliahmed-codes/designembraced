@@ -19,8 +19,6 @@ export default class Navigation extends Component {
     }
 
     addEventListeners() {
-        console.log(this.elements);
-
         this.elements.hamburgerBtn.addEventListener('click', this.handleToggle.bind(this))
     }
 }
