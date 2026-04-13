@@ -12,8 +12,8 @@ html {
   @extend %cover;
 
   line-height: 1;
-  // position: fixed;
-  // overflow: hidden;
+  position: fixed;
+  overflow: hidden;
   font-size: 62.5%;
 }
 
@@ -43,5 +43,4 @@ img {
 }
 
 .content {
-  
 }

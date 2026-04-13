@@ -10,9 +10,9 @@ html(lang="en")
 
   body(style='background-color: ' + (colors && colors.backgroundColor) + '; color: ' + (colors && colors.textColor))
     include ./partials/preloader
-    include ./partials/navigation
 
     .content#content(data-template=template data-backgroundColor=colors.backgroundColor data-color=colors.textColor)
+      include ./partials/navigation
       block content
 
     include ./partials/footer

@@ -1,4 +1,4 @@
-import { each } from "lodash"
+import { bind, each } from "lodash"
 import About from "./pages/About"
 import Case from "./pages/Case"
 import Home from "./pages/Home"
@@ -6,6 +6,7 @@ import Home from "./pages/Home"
 
 import Navigation from "./components/Navigation"
 import Preloader from "./components/Preloader"
+import normalizeWheel from "normalize-wheel"
 
 class App {
 
@@ -17,8 +18,12 @@ class App {
         this.createNavigation()
         this.createPreloader()
 
-
+        this.addEventListeners()
         this.addLinkListeners()
+
+
+        this.onResize()
+        this.update()
     }
 
 
@@ -36,8 +41,10 @@ class App {
             "case": new Case(),
         }
 
-
         this.page = this.pages[this.template]
+
+        this.page.create()
+
     }
 
 
@@ -47,6 +54,9 @@ class App {
 
     createPreloader() {
         this.preloader = new Preloader()
+
+        this.preloader.once('completed', this.onPreloader.bind(this))
+
     }
 
 
@@ -55,7 +65,14 @@ class App {
      * Events.
      */
 
+
+    onPreloader() {
+        this.page.show()
+    }
+
     async onChange({ url }) {
+
+        this.page.hide()
 
         const request = await fetch(url)
         console.log(url);
@@ -82,6 +99,14 @@ class App {
 
             this.content.innerHTML = divContent.innerHTML
 
+            this.page = this.pages[this.template]
+
+            this.page.create()
+            
+            this.onResize()
+
+
+            await this.page.show()
 
             this.addLinkListeners()
 
@@ -90,6 +115,50 @@ class App {
         }
     }
 
+
+    onResize() {
+
+        if (this.page && this.page.onResize) (
+            this.page.onResize()
+        )
+    }
+
+
+    onWheel(event) {
+        const normalizedWheel = normalizeWheel(event)
+
+        if (this.page && this.page.onWheel) (
+            this.page.onWheel(normalizedWheel)
+        )
+    }
+
+    /**
+     * Loops.
+     */
+
+    update() {
+
+        if (this.page) (
+            this.page.update()
+        )
+
+
+        this.frame = window.requestAnimationFrame(this.update.bind(this))
+    }
+
+
+
+    /**
+     * Listeners.
+     */
+
+
+    addEventListeners() {
+        window.addEventListener('mousewheel', this.onWheel.bind(this))
+
+        window.addEventListener('resize', this.onResize.bind(this))
+
+    }
 
     addLinkListeners() {
         const links = document.querySelectorAll('a')

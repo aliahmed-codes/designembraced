@@ -1,6 +1,13 @@
-export default class Home {
+import Page from "../../classes/Page";
+
+export default class Home extends Page {
     constructor() {
-        console.log("Home c");
+
+        super({
+            id: "home",
+            element: ".home",
+        })
+
 
     }
 }

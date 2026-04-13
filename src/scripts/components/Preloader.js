@@ -150,6 +150,8 @@ export default class Preloader extends Component {
 
     onLoaded() {
 
+        this.emit('completed')
+
 
         this.animateOut = gsap.timeline({
             delay: 1
@@ -173,8 +175,6 @@ export default class Preloader extends Component {
     }
 
     destroy() {
-
-
         this.element.parentNode.removeChild(this.element)
     }
 
