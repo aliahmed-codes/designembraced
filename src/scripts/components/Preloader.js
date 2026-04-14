@@ -2,17 +2,24 @@ import gsap from "gsap";
 import Component from "../classes/Component";
 
 export default class Preloader extends Component {
-    constructor() {
+    constructor({ template }) {
         super({
             element: '.preloader',
             elements: {
                 loadingLine: '.preloader_loading_line',
                 currentCont: '.current_count',
                 totalCont: '.total_count',
+                preloaderText: '.preloader_text',
                 navigation: document.querySelector('.navigation'),
                 footer: document.querySelector(".footer"),
+
+
+                firstCaseHeading: document.querySelector('.case_1 .case_gallery_count_heading'),
+
             }
         })
+
+        this.template = template
 
         this.state = {
             projects: [],
@@ -24,8 +31,6 @@ export default class Preloader extends Component {
 
         this.createLoader()
 
-
-
     }
 
 
@@ -35,9 +40,23 @@ export default class Preloader extends Component {
 
         this.state.totalProjects = window.ASSETS.projectsAssets.length
 
-        this.elements.totalCont.textContent = `/ ${String(this.state.totalProjects).padStart(2, '0')}`
+        this.elements.totalCont.textContent = `/${String(this.state.totalProjects).padStart(2, '0')}`
+
+        if (this.template === "home") this.createHomeHeading()
     }
 
+    createHomeHeading() {
+
+        const from = this.elements.preloaderText.getBoundingClientRect()
+        const to = this.elements.firstCaseHeading.getBoundingClientRect()
+
+        gsap.set(this.elements.firstCaseHeading, {
+            x: from.left - to.left + 10,
+            y: from.top - to.top,
+            duration: .5,
+            ease: 'power3.inOut'
+        })
+    }
 
     createLoader() {
         this.prepareAssets()
@@ -129,7 +148,7 @@ export default class Preloader extends Component {
 
 
         if (percentage === 100) {
-            this.onLoaded()
+            setTimeout(() => this.onLoaded(), 1000)
         }
 
     }
@@ -150,13 +169,12 @@ export default class Preloader extends Component {
 
     onLoaded() {
 
-        this.emit('completed')
-
+        if (this.template === "home")
+            this.elements.currentCont.textContent = `PR.${String(1).padStart(2, '0')}`
 
         this.animateOut = gsap.timeline({
             delay: 1
         })
-
 
         this.animateOut.to(this.element, {
             opacity: 0,
@@ -167,15 +185,18 @@ export default class Preloader extends Component {
         this.updateComponents()
 
 
-        this.animateOut.call(_ => {
-            this.destroy()
+        this.animateOut.call(async _ => {
+            await this.destroy()
+            this.emit('completed')
         })
-
 
     }
 
     destroy() {
-        this.element.parentNode.removeChild(this.element)
+        return new Promise((resolve) => {
+            this.element.parentNode.removeChild(this.element)
+            resolve()
+        })
     }
 
 

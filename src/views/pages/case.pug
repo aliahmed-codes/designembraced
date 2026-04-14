@@ -19,22 +19,22 @@ block content
 
                     .case_info_wrapper 
                         .case_info
-                            p Project type:
-                            p!=project.projectType.replace(/\n/g, '<br>')
+                            p(data-animation="paragraph") Project type:
+                            p(data-animation="paragraph")!=project.projectType.replace(/\n/g, '<br>')
 
                         .case_info
-                            p Involvement:
-                            p!=project.involvement.replace(/\n/g, '<br>')
+                            p(data-animation="paragraph") Involvement:
+                            p(data-animation="paragraph")!=project.involvement.replace(/\n/g, '<br>')
 
                         .case_info
-                            p Date created:
-                            p=project.dateCreated
+                            p(data-animation="paragraph") Date created:
+                            p(data-animation="paragraph")=project.dateCreated
 
 
                         .case_info
-                            p Tools:
+                            p(data-animation="paragraph") Tools:
                             each tool in project.tools
-                                p=tool
+                                p(data-animation="paragraph")=tool
 
             .case_medias
                 .case_medias_wrapper   

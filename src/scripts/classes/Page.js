@@ -1,8 +1,10 @@
 import gsap from "gsap"
-import { each } from "lodash"
-
-
+import { each, map } from "lodash"
 import Prefix from 'prefix'
+
+import Paragraph from "./Paragraph"
+import Title from "./Title"
+import { splitByLines } from "../utils/text"
 
 export default class Page {
 
@@ -10,7 +12,9 @@ export default class Page {
         this.id = id
         this.selector = element
         this.selectorChildren = {
-            ...elements
+            ...elements,
+            animationsTitles: '[data-animation="title"]',
+            animationsParagraphs: '[data-animation="paragraph"]',
         }
 
 
@@ -31,42 +35,94 @@ export default class Page {
         }
 
 
-        if (this.selectorChildren)
-            each(this.selectorChildren, (child, index) => {
-                if (child instanceof window.HTMLElement || child instanceof window.NodeList || Array.isArray(child)) {
-                    this.elements[index] = child
-                } else {
-                    this.elements[index] = this.element.querySelectorAll(child)
+        each(this.selectorChildren, (child, index) => {
+            if (child instanceof window.HTMLElement || child instanceof window.NodeList || Array.isArray(child)) {
+                this.elements[index] = child
+            } else {
+                this.elements[index] = this.element.querySelectorAll(child)
 
-                    if (this.elements[index].length === 0) {
-                        this.elements[index] = null
-                    } else if (this.elements[index].length === 1) {
-                        this.elements[index] = this.element.querySelector(child)
-                    }
+                if (this.elements[index].length === 0) {
+                    this.elements[index] = null
+                } else if (this.elements[index].length === 1) {
+                    this.elements[index] = this.element.querySelector(child)
                 }
+            }
+        })
+
+
+    }
+
+
+    animationsIn({ titles, paragraphs } = {}) {
+
+        this.animations = []
+
+        if (titles) {
+            this.animationsTitles = map(this.elements.animationsTitles, element => {
+                splitByLines(element)
+
+                return new Title({ element })
             })
+
+            this.animations.push(...this.animationsTitles)
+        }
+
+        this.animationsParagraphs = map(this.elements.animationsParagraphs, element => {
+            splitByLines(element)
+
+            return new Paragraph({ element })
+        })
+
+        this.animations.push(...this.animationsParagraphs)
+
+    }
+
+
+    animationsOut(timeline) {
+        each(this.animations, animation => {
+            const spans = animation.element.querySelectorAll('span span')
+
+            if (spans.length) {
+                timeline.to(spans, {
+                    y: '-100%',
+                    duration: 0.8,
+                    ease: 'power3.in',
+                    stagger: 0.03
+                }, 0)
+            }
+        })
     }
 
     /**
      * Animations.
      */
 
-    show() {
+    show({ titles = true, page = true } = {}) {
+
         this.animationIn = gsap.timeline()
 
-        this.animationIn.fromTo(this.element, {
-            autoAlpha: 0,
-        }, {
-            autoAlpha: 1
-        })
+        this.animationsIn({ titles })
+
+        if (page) {
+            this.animationIn.fromTo(this.element, {
+                autoAlpha: 0,
+            }, {
+                autoAlpha: 1
+            })
+        }
+
     }
 
-
     hide() {
-        this.animationOut = gsap.timeline()
+        return new Promise(resolve => {
+            this.timelineOut = gsap.timeline({ onComplete: resolve })
 
-        this.animationOut.to(this.element, {
-            autoAlpha: 0
+            this.animationsOut(this.timelineOut)
+
+            this.timelineOut.to(this.element, {
+                autoAlpha: 0,
+                duration: 0.5
+            })
         })
     }
 

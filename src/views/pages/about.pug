@@ -11,7 +11,7 @@ block content
 
             .about_banner
                 .about_banner_wrapper   
-                    h1.banner_heading
+                    h1.banner_heading(data-animation="title")
                         span= about.heroText.topLine
                         span.top_line.line
                         br
@@ -26,49 +26,52 @@ block content
                 .about_experiences_wrapper.about_section_wrapper
                     .section_headings 
                         .headings_top 
-                            h3=about.profile.yearsLabel
+                            h3(data-animation="title")=about.profile.yearsLabel
                             .line_index     
                                 span.line 
-                                p 001
-                        h2.heading_count=about.profile.yearsCount
+                                p(data-animation="paragraph") 001
+                        h2(data-animation="title").heading_count=about.profile.yearsCount
 
                     .about_experiences_content.section_content
-                        h2.content_heading!=about.profile.mainTitle.replace(/\n/g, '<br>')
-                        .content_body!=about.profile.bodyText.replace(/\n/g, '<br>')
+                        h2.content_heading(data-animation="title")!=about.profile.mainTitle.replace(/\n/g, '<br>')
+                        .content_body
+                            each paragraph in about.profile.bodyText.split('\n')
+                                if paragraph.trim()
+                                p(data-animation="paragraph")= paragraph
                             br
                             br
-                            a(href=`mailto:${about.profile.contactEmail}`)=about.profile.contactEmail 
+                            a(href=`mailto:${about.profile.contactEmail}` data-animation="paragraph")=about.profile.contactEmail 
 
 
             .about_brands.about_section
                 .about_brands_wrapper.about_section_wrapper
                     .section_headings 
                         .headings_top 
-                            h3=about.brands.brandsLabel
+                            h3(data-animation="title")=about.brands.brandsLabel
                             .line_index     
                                 span.line 
-                                p 002
-                        h2.heading_count=about.brands.brandsCount
+                                p(data-animation="paragraph") 002
+                        h2(data-animation="title").heading_count=about.brands.brandsCount
 
                     .about_brands_content.section_content
                         .content_body
                             each brand in about.brands.brandList
-                                p=brand
+                                p(data-animation="paragraph")=brand
 
             .about_awards.about_section
                 .about_awards_wrapper.about_section_wrapper
                     .section_headings 
                         .headings_top 
-                            h3=about.awards.awardsLabel
+                            h3(data-animation="title")=about.awards.awardsLabel
                             .line_index     
                                 span.line 
-                                p 003
-                        h2.heading_count=about.awards.awardsCount
+                                p(data-animation="paragraph") 003
+                        h2(data-animation="title").heading_count=about.awards.awardsCount
 
                     .about_awards_content.section_content
                         .content_body
                             each award in about.awards.awardStats
                                 .award
-                                    p!=award.category.replace(/\n/g, '<br>')
-                                    span.count=award.count
+                                    p(data-animation="paragraph")!=award.category.replace(/\n/g, '<br>')
+                                    span(data-animation="paragraph").count=award.count
 

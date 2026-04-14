@@ -9,14 +9,15 @@ block content
             .case_gallery
                 .case_gallery_wrapper   
                     each project, index in projects
-                        a.case_gallery_link(href=Link(project.slug))  
-                            figure.case_gallery_media
-                                img.case_gallery_media_image(src=imageUrl(project.mainBanner) )   
-                                .case_gallery_count_wrapper
-                                    .case_gallery_count
-                                        h1.case_gallery_count_heading PR.#{String(project.caseIndex).padStart(2, '0')}   
-                                            span.gallery_total_count /#{String(projects.length).padStart(2, '0')}
-                                        p.case_gallery_name!=project.projectName.replace(/\n/g, '<br>') 
-                            p.case_gallery_name!=project.projectName.replace(/\n/g, '<br>')
+                        .case_gallery_link_wrapper(class=`case_${project.caseIndex}`)
+                            a.case_gallery_link(href=Link(project.slug))  
+                                figure.case_gallery_media
+                                    img.case_gallery_media_image(src=imageUrl(project.mainBanner) )   
+                                    .case_gallery_count_wrapper
+                                        .case_gallery_count
+                                            h1(data-animation="title").case_gallery_count_heading PR.#{String(project.caseIndex).padStart(2, '0')}   
+                                                span.gallery_total_count /#{String(projects.length).padStart(2, '0')}
+                                            p(data-animation="paragraph").case_gallery_name!=project.projectName.replace(/\n/g, '<br>') 
+                                p.case_gallery_name--mobile!=project.projectName.replace(/\n/g, '<br>')
 
 

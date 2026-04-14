@@ -44,7 +44,6 @@ class App {
         this.page = this.pages[this.template]
 
         this.page.create()
-
     }
 
 
@@ -53,13 +52,10 @@ class App {
     }
 
     createPreloader() {
-        this.preloader = new Preloader()
+        this.preloader = new Preloader({ template: this.template })
 
         this.preloader.once('completed', this.onPreloader.bind(this))
-
     }
-
-
 
     /**
      * Events.
@@ -67,15 +63,16 @@ class App {
 
 
     onPreloader() {
-        this.page.show()
+        this.onResize()
+
+        this.page.show({ onPreloader: true, timeline: null })
     }
 
     async onChange({ url }) {
 
-        this.page.hide()
+        await this.page.hide()
 
         const request = await fetch(url)
-        console.log(url);
 
         if (request.status === 200) {
             const html = await request.text()
@@ -96,17 +93,18 @@ class App {
             this.bodyContent.style.color = this.textColor
             this.content.setAttribute('data-template', this.template)
 
-
             this.content.innerHTML = divContent.innerHTML
 
             this.page = this.pages[this.template]
 
             this.page.create()
-            
-            this.onResize()
 
+            setTimeout(() => {
+                this.onResize()
+            }, 1000)
 
             await this.page.show()
+
 
             this.addLinkListeners()
 
