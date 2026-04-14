@@ -54,7 +54,10 @@ class App {
     createPreloader() {
         this.preloader = new Preloader({ template: this.template })
 
-        this.preloader.once('completed', this.onPreloader.bind(this))
+        this.preloader.once('completed', (cache) => {
+            this.cache = cache || new Map()
+            this.onPreloader()
+        })
     }
 
     /**
@@ -68,14 +71,28 @@ class App {
         this.page.show({ onPreloader: true, timeline: null })
     }
 
-    async onChange({ url }) {
+    async fetchPage(url) {
+        if (this.cache && this.cache.has(url)) {
+            return this.cache.get(url)
+        }
 
+        const response = await fetch(url)
+        const html = await response.text()
+
+        if (this.cache) {
+            this.cache.set(url, html)
+        }
+
+        return html
+    }
+
+
+    async onChange({ url }) {
         await this.page.hide()
 
-        const request = await fetch(url)
+        const html = await this.fetchPage(url)
 
-        if (request.status === 200) {
-            const html = await request.text()
+        if (html) {
 
             window.history.pushState({}, '', url)
 
@@ -108,8 +125,6 @@ class App {
 
             this.addLinkListeners()
 
-        } else {
-            console.log("Error");
         }
     }
 
@@ -167,6 +182,8 @@ class App {
                 event.preventDefault()
 
                 const { href } = link
+
+                if (href === window.location.href) return
 
                 this.onChange({ url: href })
             })

@@ -60,9 +60,25 @@ export default class Preloader extends Component {
 
     createLoader() {
         this.prepareAssets()
-
-        this.loadProjects()
+        this.createCache()
+        this.startLoading()
     }
+
+
+    createCache() {
+        this.cache = new Map()
+    }
+
+
+    async startLoading() {
+        await Promise.all([
+            this.loadProjects(),
+            this.prefetchSilentPages()
+        ])
+
+        setTimeout(() => this.onLoaded(), 1000)
+    }
+
 
     prepareAssets() {
         const assets = window.ASSETS
@@ -103,9 +119,13 @@ export default class Preloader extends Component {
 
 
     async loadProjects() {
-        for (const project of this.state.projects) {
+        const caseUrls = window.PAGES?.cases || []
 
-            const promises = project.map((media) => {
+        for (let i = 0; i < this.state.projects.length; i++) {
+            const project = this.state.projects[i]
+            const caseUrl = caseUrls[i]
+
+            const mediaPromises = project.map((media) => {
                 return new Promise((resolve) => {
 
                     if (media.type === 'image') {
@@ -129,29 +149,50 @@ export default class Preloader extends Component {
                 });
             });
 
-            await Promise.all(promises);
+            const pagePromise = caseUrl ? this.prefetchPage(caseUrl) : Promise.resolve()
 
-            this.onProjectLoad(project);
+            await Promise.all([...mediaPromises, pagePromise])
+
+            this.onProjectLoad()
         }
     }
+
+
+    // Fetch home and about silently — no count contribution
+    async prefetchSilentPages() {
+        const pages = window.PAGES
+        if (!pages) return
+
+        const urls = [pages.home, pages.about].filter(Boolean)
+
+        await Promise.all(urls.map(url => this.prefetchPage(url)))
+    }
+
+
+    async prefetchPage(url) {
+        const fullUrl = new URL(url, window.location.origin).href
+
+        try {
+            const response = await fetch(fullUrl)
+            if (response.ok) {
+                const html = await response.text()
+                this.cache.set(fullUrl, html)
+            }
+        } catch (_) {
+            // silently fail — page will be fetched on navigation
+        }
+    }
+
 
     onProjectLoad() {
-        this.state.projectLoaded += 1;
+        this.state.projectLoaded += 1
 
-        const total = this.state.projects.length;
-        const percentage = this.state.projectLoaded / total * 100;
-
+        const percentage = this.state.projectLoaded / this.state.totalProjects * 100
 
         this.updateProgressLine(percentage)
-
         this.updateProjectCount()
-
-
-        if (percentage === 100) {
-            setTimeout(() => this.onLoaded(), 1000)
-        }
-
     }
+
 
     updateProjectCount() {
         this.elements.currentCont.textContent = `PR.${String(this.state.projectLoaded).padStart(2, '0')}`
@@ -187,7 +228,7 @@ export default class Preloader extends Component {
 
         this.animateOut.call(async _ => {
             await this.destroy()
-            this.emit('completed')
+            this.emit('completed', this.cache)
         })
 
     }

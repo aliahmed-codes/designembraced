@@ -61,6 +61,15 @@ const buildAssets = (about, projects) => {
 };
 
 
+const buildPages = (projects) => {
+    return {
+        home: '/',
+        about: '/about',
+        cases: projects.map(project => `/case/${project.slug.current}`)
+    };
+};
+
+
 /**
  * Helper.
  */
@@ -87,8 +96,9 @@ const requestHandle = async () => {
     const footer = await client.fetch(`*[_id == "footer"][0]`);
 
     const assets = buildAssets(about, projects);
+    const pages = buildPages(projects);
 
-    return { assets, home, about, navigation, projects, footer }
+    return { assets, pages, home, about, navigation, projects, footer }
 
 }
 

@@ -16,6 +16,7 @@ html(lang="en")
       block content
 
     include ./partials/footer
-    script.  
+    script.
       window.ASSETS = !{JSON.stringify(assets).replace(/<\//g, "<\\/")}
+      window.PAGES = !{JSON.stringify(pages).replace(/<\//g, "<\\/")}
     script(src="/js/app.js")
