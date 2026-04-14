@@ -57,8 +57,10 @@ export default class Page {
 
         this.animations = []
 
+        const toArray = el => !el ? [] : el instanceof NodeList ? Array.from(el) : Array.isArray(el) ? el : [el]
+
         if (titles) {
-            this.animationsTitles = map(this.elements.animationsTitles, element => {
+            this.animationsTitles = toArray(this.elements.animationsTitles).map(element => {
                 splitByLines(element)
 
                 return new Title({ element })
@@ -67,7 +69,7 @@ export default class Page {
             this.animations.push(...this.animationsTitles)
         }
 
-        this.animationsParagraphs = map(this.elements.animationsParagraphs, element => {
+        this.animationsParagraphs = toArray(this.elements.animationsParagraphs).map(element => {
             splitByLines(element)
 
             return new Paragraph({ element })
@@ -78,19 +80,30 @@ export default class Page {
     }
 
 
-    animationsOut(timeline) {
-        each(this.animations, animation => {
+    animationsOut() {
+        if (!this.animations || !this.animations.length) {
+            return Promise.resolve()
+        }
+
+        const promises = map(this.animations, animation => {
             const spans = animation.element.querySelectorAll('span span')
 
-            if (spans.length) {
-                timeline.to(spans, {
-                    y: '-100%',
-                    duration: 0.8,
-                    ease: 'power3.in',
-                    stagger: 0.03
-                }, 0)
-            }
+            return new Promise(resolve => {
+                if (spans.length) {
+                    gsap.to(spans, {
+                        y: '-100%',
+                        duration: 0.8,
+                        ease: 'power3.in',
+                        stagger: 0.03,
+                        onComplete: resolve
+                    })
+                } else {
+                    resolve()
+                }
+            })
         })
+
+        return Promise.all(promises)
     }
 
     /**
@@ -113,15 +126,14 @@ export default class Page {
 
     }
 
-    hide() {
+    async hide() {
+        await this.animationsOut()
+
         return new Promise(resolve => {
-            this.timelineOut = gsap.timeline({ onComplete: resolve })
-
-            this.animationsOut(this.timelineOut)
-
-            this.timelineOut.to(this.element, {
+            gsap.to(this.element, {
                 autoAlpha: 0,
-                duration: 0.5
+                duration: 0.5,
+                onComplete: resolve
             })
         })
     }
@@ -134,7 +146,6 @@ export default class Page {
     onResize() {
         if (this.elements.wrapper) {
             this.scroll.limit = this.elements.wrapper.clientHeight - window.innerHeight
-            console.log("limit", this.scroll.limit);
         }
     }
 
