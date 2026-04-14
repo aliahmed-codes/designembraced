@@ -1,5 +1,19 @@
 import each from 'lodash/each'
 
+export function splitNavigationText(el) {
+    if (!el) return []
+
+    const elements = el instanceof NodeList ? Array.from(el) : [el]
+    const spans = []
+
+    elements.forEach(element => {
+        const innerSpans = splitByLines(element)
+        spans.push(...innerSpans)
+    })
+
+    return spans
+}
+
 export function splitByLines(element) {
     const nodes = Array.from(element.childNodes)
 
@@ -162,3 +176,5 @@ function parseLine(line) {
         return (line === '<br>') ? '<br>' : `<span>${line}</span>` + ((line.length > 1) ? ' ' : '')
     }
 }
+
+

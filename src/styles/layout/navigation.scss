@@ -169,7 +169,8 @@
         display: block;
       }
 
-      .navigation_menu {
+      .navigation_menu,
+      .navigation_menu span {
         @extend %title-120;
 
         grid-column: 1/-1;
