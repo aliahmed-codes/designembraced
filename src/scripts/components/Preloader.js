@@ -67,6 +67,13 @@ export default class Preloader extends Component {
 
     createCache() {
         this.cache = new Map()
+
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i)
+            if (key.startsWith('page:')) {
+                this.cache.set(key.slice(5), sessionStorage.getItem(key))
+            }
+        }
     }
 
 
@@ -172,11 +179,14 @@ export default class Preloader extends Component {
     async prefetchPage(url) {
         const fullUrl = new URL(url, window.location.origin).href
 
+        if (this.cache.has(fullUrl)) return
+
         try {
             const response = await fetch(fullUrl)
             if (response.ok) {
                 const html = await response.text()
                 this.cache.set(fullUrl, html)
+                sessionStorage.setItem(`page:${fullUrl}`, html)
             }
         } catch (_) {
             // silently fail — page will be fetched on navigation

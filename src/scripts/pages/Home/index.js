@@ -9,7 +9,6 @@ export default class Home extends Page {
             element: ".home",
             elements: {
                 firstCaseHeading: document.querySelector('.case_1 .case_gallery_count_heading'),
-
             }
         })
 
@@ -32,6 +31,10 @@ export default class Home extends Page {
         } else {
             super.show()
         }
+    }
+
+    hind() {
+
     }
 
 }

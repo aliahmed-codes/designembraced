@@ -11,6 +11,10 @@
   @extend %page;
   @extend %cover;
 
+  img{
+    opacity: 0;
+  }
+
   .home_wrapper {
     height: 100%;
     width: 100%;

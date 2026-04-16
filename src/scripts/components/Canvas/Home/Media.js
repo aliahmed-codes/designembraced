@@ -1,0 +1,148 @@
+import * as THREE from "three"
+import gsap from "gsap"
+
+import fragment from "../../../../shaders/plane-fragment.glsl"
+import vertex from "../../../../shaders/plane-vertex.glsl"
+
+
+export default class Media {
+    constructor({ element, index, scene, sizes, geometry, textureLoader }) {
+
+        this.element = element
+        this.index = index
+        this.scene = scene
+        this.sizes = sizes
+        this.geometry = geometry
+        this.textureLoader = textureLoader
+
+        this.extra = {
+            x: 0,
+            y: 0
+        }
+
+        this.createTexture()
+        this.createMaterial()
+        this.createMesh()
+
+
+        this.createBounds({ sizes: this.sizes })
+
+        this.addEventListeners()
+
+    }
+
+
+    createTexture() {
+        this.image = this.element.querySelector('img')
+
+        this.media = new Image()
+        this.media.crossOrigin = "anonymous"
+        this.media.src = this.image.src
+
+        this.texture = new THREE.Texture(this.media)
+
+        this.media.onload = () => {
+            this.texture.needsUpdate = true
+            this.material.uniforms.uImageSizes.value.set(
+                this.media.naturalWidth,
+                this.media.naturalHeight
+            )
+        }
+    }
+
+    createMaterial() {
+        this.material = new THREE.ShaderMaterial({
+            vertexShader: vertex,
+            fragmentShader: fragment,
+            transparent: true,
+            uniforms: {
+                tMap: { value: this.texture },
+                uImageSizes: { value: new THREE.Vector2(0, 0) },
+                uPlaneSizes: { value: new THREE.Vector2(0, 0) },
+                uHover: { value: 0 },
+                uMouse: { value: new THREE.Vector2(0.5, 0.5) }
+            }
+        })
+    }
+
+
+    createMesh() {
+        this.mesh = new THREE.Mesh(this.geometry, this.material)
+
+        this.scene.add(this.mesh)
+
+    }
+
+    createBounds({ sizes }) {
+        this.sizes = sizes
+
+        this.bounds = this.image.getBoundingClientRect()
+
+        this.updateScale()
+        this.updateX()
+        this.updateY()
+
+    }
+
+
+    updateScale() {
+        this.width = this.bounds.width / window.innerWidth
+        this.height = this.bounds.height / window.innerHeight
+
+        this.mesh.scale.x = this.sizes.width * this.width
+        this.mesh.scale.y = this.sizes.height * this.height
+
+        this.material.uniforms.uPlaneSizes.value.set(this.mesh.scale.x, this.mesh.scale.y)
+    }
+
+    updateX(x = 0) {
+        this.x = (this.bounds.left + x) / window.innerWidth
+
+        this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x * this.sizes.width) + this.extra.x
+    }
+
+
+    updateY(y = 0) {
+
+        this.y = (this.bounds.top + y) / window.innerHeight
+
+        this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) + this.extra.y
+    }
+
+
+    onMouseEnter() {
+        gsap.to(this.material.uniforms.uHover, {
+            value: 1,
+            duration: 0.5,
+            ease: 'power3.out'
+        })
+    }
+
+    onMouseMove(e) {
+        const x = (e.clientX - this.bounds.left) / this.bounds.width
+        const y = 1.0 - (e.clientY - this.bounds.top) / this.bounds.height
+
+        gsap.to(this.material.uniforms.uMouse.value, {
+            x,
+            y,
+            duration: 0.5,
+            ease: 'power3.out'
+        })
+    }
+
+    onMouseleave() {
+        gsap.to(this.material.uniforms.uHover, {
+            value: 0,
+            duration: 0.5,
+            ease: 'power3.out'
+        })
+    }
+
+    addEventListeners() {
+        this.element.addEventListener('mouseenter', this.onMouseEnter.bind(this))
+
+        this.element.addEventListener('mousemove', this.onMouseMove.bind(this))
+
+        this.element.addEventListener('mouseleave', this.onMouseleave.bind(this))
+    }
+}

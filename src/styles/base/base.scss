@@ -43,4 +43,11 @@ img {
 }
 
 .content {
+  @extend %cover;
+}
+
+canvas {
+  position: static;
+  z-index: 1;
+  pointer-events: none;
 }

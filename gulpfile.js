@@ -4,6 +4,7 @@ const sass = require('gulp-sass')(require('sass'));
 const rollup = require('@rollup/stream');
 const resolve = require('@rollup/plugin-node-resolve');
 const commonjs = require('@rollup/plugin-commonjs');
+const { string } = require('rollup-plugin-string');
 const uglify = require('gulp-uglify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
@@ -18,6 +19,7 @@ const paths = {
     styles: 'src/styles/main.scss',
     watchStyles: 'src/styles/**/*.scss',
     scripts: 'src/scripts/**/*.js',
+    shaders: 'src/shaders/**/*.glsl',
     views: 'src/views/pages/**/*.pug',
     allViews: 'src/views/**/*.pug',
     assets: 'src/assets/**/*'
@@ -53,7 +55,7 @@ function views(cb) {
 function scripts() {
     return rollup({
         input: 'src/scripts/app.js',
-        plugins: [resolve.default(), commonjs.default()],
+        plugins: [string({ include: '**/*.glsl' }), resolve.default(), commonjs.default()],
         output: {
             format: 'iife'
         }
@@ -103,7 +105,7 @@ function serve() {
     });
 
     watch(paths.watchStyles, styles);
-    watch(paths.scripts, scripts);
+    watch([paths.scripts, paths.shaders], scripts);
     watch(paths.allViews, views);
 }
 
