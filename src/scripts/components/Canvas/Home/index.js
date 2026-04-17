@@ -109,6 +109,7 @@ export default class Home {
     addEventListeners() {
         map(this.medias, media => media.addEventListeners())
     }
+
     removeEventListeners() {
         map(this.medias, media => media.removeEventListeners())
     }
@@ -136,7 +137,14 @@ export default class Home {
                     }
                 }
 
-                media.update(this.scroll.current)
+                const R = 1200
+                const extraYPx = -(media.extra.y * (window.innerHeight / this.sizes.height))
+                const visualCenterY = media.bounds.top + media.bounds.height / 2 - this.scroll.current + extraYPx
+                const d = visualCenterY - window.innerHeight / 2
+                const theta = Math.asin(Math.max(-1, Math.min(1, d / R)))
+                const xOffset = R * (Math.cos(theta) - 1)
+
+                media.update(this.scroll.current, xOffset, theta)
             })
         }
 

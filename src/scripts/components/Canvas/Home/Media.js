@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import gsap from "gsap"
+import Prefix from 'prefix'
 
 import fragment from "../../../../shaders/plane-fragment.glsl"
 import vertex from "../../../../shaders/plane-vertex.glsl"
@@ -28,6 +29,9 @@ export default class Media {
         this.createBounds({ sizes: this.sizes })
 
         this.addEventListeners()
+
+        this.transformPrefix = Prefix('transform')
+
     }
 
 
@@ -111,6 +115,7 @@ export default class Media {
 
 
     onResize(sizes) {
+        this.extra.x = 0
         this.extra.y = 0
         this.element.style.transform = ''
         this.createBounds(sizes)
@@ -159,11 +164,16 @@ export default class Media {
         this.element.removeEventListener('mouseleave', this.onMouseleave.bind(this));
     }
 
-    update(scroll) {
+    update(scroll, xOffset = 0, rotation = 0) {
+        this.extra.x = (xOffset / window.innerWidth) * this.sizes.width
+        this.updateX()
         this.updateY(-scroll)
 
-        const extraPx = -(this.extra.y * (window.innerHeight / this.sizes.height))
+        this.mesh.rotation.z = -rotation
 
-        this.element.style.transform = extraPx !== 0 ? `translateY(${extraPx}px)` : ''
+        const extraYPx = -(this.extra.y * (window.innerHeight / this.sizes.height))
+        const rotateDeg = rotation * (180 / Math.PI)
+
+        this.element.style[this.transformPrefix] = `translateX(${xOffset}px) translateY(${extraYPx}px) rotate(${rotateDeg}deg)`
     }
 }
