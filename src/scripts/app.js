@@ -8,6 +8,7 @@ import Navigation from "./components/Navigation"
 import Preloader from "./components/Preloader"
 import normalizeWheel from "normalize-wheel"
 import Canvas from "./components/Canvas"
+import device from "./classes/DeviceDetection"
 
 class App {
 
@@ -27,6 +28,8 @@ class App {
         this.onResize()
         this.update()
     }
+
+
 
     createContent() {
         this.content = document.querySelector('.content')
@@ -138,6 +141,8 @@ class App {
 
     onResize() {
 
+        device.update()
+
         if (this.page && this.page.onResize) (
             this.page.onResize()
         )
@@ -153,6 +158,10 @@ class App {
 
     onWheel(event) {
         const normalizedWheel = normalizeWheel(event)
+
+        if (this.canvas && this.canvas.onWheel) {
+            this.canvas.onWheel(normalizedWheel)
+        }
 
         if (this.page && this.page.onWheel) (
             this.page.onWheel(normalizedWheel)

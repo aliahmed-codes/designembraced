@@ -89,10 +89,30 @@ export default class Canvas {
             width: viewWidth
         }
 
+        const values = {
+            sizes: this.sizes
+
+        }
+
+        if (this.home) {
+            this.home.onResize(values)
+        }
+
+    }
+
+
+    onWheel(event) {
+        if (this.home) {
+            this.home.onWheel(event)
+        }
     }
 
 
     update() {
+        if (this.home) {
+            this.home.update()
+        }
+
 
         this.renderer.render(this.scene, this.camera)
     }

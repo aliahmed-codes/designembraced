@@ -12,7 +12,7 @@ void main()
     float dist = distance(uv, uMouse);
     float strength = smoothstep(0.5, 0.0, dist / 2.) * uHover;
 
-    pos.z += strength * 0.3;
+    pos.z += strength * 0.35;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }

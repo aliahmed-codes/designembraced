@@ -110,6 +110,13 @@ export default class Media {
     }
 
 
+
+    onResize(sizes) {
+        this.extra.y = 0
+        this.element.style.transform = ''
+        this.createBounds(sizes)
+    }
+
     onMouseEnter() {
         gsap.to(this.material.uniforms.uHover, {
             value: 1,
@@ -119,8 +126,10 @@ export default class Media {
     }
 
     onMouseMove(e) {
-        const x = (e.clientX - this.bounds.left) / this.bounds.width
-        const y = 1.0 - (e.clientY - this.bounds.top) / this.bounds.height
+        const rect = this.image.getBoundingClientRect()
+
+        const x = (e.clientX - rect.left) / rect.width
+        const y = 1.0 - (e.clientY - rect.top) / rect.height
 
         gsap.to(this.material.uniforms.uMouse.value, {
             x,
@@ -145,4 +154,14 @@ export default class Media {
 
         this.element.addEventListener('mouseleave', this.onMouseleave.bind(this))
     }
+
+
+    update(scroll) {
+        this.updateY(-scroll)
+
+        const extraPx = -(this.extra.y * (window.innerHeight / this.sizes.height))
+
+        this.element.style.transform = extraPx !== 0 ? `translateY(${extraPx}px)` : ''
+    }
+
 }
