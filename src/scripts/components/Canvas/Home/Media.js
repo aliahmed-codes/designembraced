@@ -28,7 +28,6 @@ export default class Media {
         this.createBounds({ sizes: this.sizes })
 
         this.addEventListeners()
-
     }
 
 
@@ -149,12 +148,16 @@ export default class Media {
 
     addEventListeners() {
         this.element.addEventListener('mouseenter', this.onMouseEnter.bind(this))
-
         this.element.addEventListener('mousemove', this.onMouseMove.bind(this))
-
         this.element.addEventListener('mouseleave', this.onMouseleave.bind(this))
     }
 
+
+    removeEventListeners() {
+        this.element.removeEventListener('mouseenter', this.onMouseEnter.bind(this));
+        this.element.removeEventListener('mousemove', this.onMouseMove.bind(this));
+        this.element.removeEventListener('mouseleave', this.onMouseleave.bind(this));
+    }
 
     update(scroll) {
         this.updateY(-scroll)
@@ -163,5 +166,4 @@ export default class Media {
 
         this.element.style.transform = extraPx !== 0 ? `translateY(${extraPx}px)` : ''
     }
-
 }

@@ -44,9 +44,6 @@ export default class Home {
 
 
     createGalleries() {
-
-
-
         this.medias = map(this.mediasElements, (element, index) => {
             return new Media({
                 element,
@@ -73,7 +70,7 @@ export default class Home {
             width: this.galleryBounds.width / window.innerWidth * this.sizes.width
         }
 
-        // this.sizes.y = this.scroll.target = 0
+        this.sizes.y = this.scroll.target = 0
 
         map(this.medias, media => media.onResize(event))
     }
@@ -82,6 +79,38 @@ export default class Home {
 
     onWheel({ pixelX, pixelY }) {
         this.scroll.target += pixelY
+
+        clearTimeout(this.snapTimeout)
+        this.snapTimeout = setTimeout(() => this.snapToNearest(), 150)
+    }
+
+    snapToNearest() {
+        if (!this.medias || !this.medias.length) return
+
+        let snapTarget = this.scroll.target
+        let closestDist = Infinity
+
+        map(this.medias, media => {
+            const extraPx = -(media.extra.y * (window.innerHeight / this.sizes.height))
+
+            const candidateTarget = media.bounds.top + media.bounds.height / 2 + extraPx - window.innerHeight / 2
+
+            const dist = Math.abs(candidateTarget - this.scroll.current)
+
+            if (dist < closestDist) {
+                closestDist = dist
+                snapTarget = candidateTarget
+            }
+        })
+
+        this.scroll.target = snapTarget
+    }
+
+    addEventListeners() {
+        map(this.medias, media => media.addEventListeners())
+    }
+    removeEventListeners() {
+        map(this.medias, media => media.removeEventListeners())
     }
 
     update() {
@@ -112,5 +141,9 @@ export default class Home {
         }
 
         this.scroll.last = this.scroll.current
+    }
+
+    destroy() {
+        this.scene.remove(this.group)
     }
 }

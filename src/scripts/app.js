@@ -76,7 +76,7 @@ class App {
     onPreloader() {
         this.onResize()
 
-        this.canvas.onChangeEnd()
+        this.canvas.onPreloaded()
 
         this.page.show({ onPreloader: true, timeline: null })
     }
@@ -98,6 +98,9 @@ class App {
 
 
     async onChange({ url }) {
+
+        this.canvas.onChangeStart(this.template)
+
         await this.page.hide()
 
         const html = await this.fetchPage(url)
@@ -121,6 +124,8 @@ class App {
             this.content.setAttribute('data-template', this.template)
 
             this.content.innerHTML = divContent.innerHTML
+
+            this.canvas.onChangeEnd(this.template)
 
             this.page = this.pages[this.template]
 
@@ -194,10 +199,14 @@ class App {
 
 
     addEventListeners() {
+
+        if (this.canvas && this.canvas.addEventListeners) {
+            this.canvas.addEventListeners()
+        }
+
+
         window.addEventListener('mousewheel', this.onWheel.bind(this))
-
         window.addEventListener('resize', this.onResize.bind(this))
-
     }
 
     addLinkListeners() {

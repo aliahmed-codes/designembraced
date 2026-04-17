@@ -57,17 +57,36 @@ export default class Canvas {
     }
 
 
+    destroyHome() {
+        if (!this.home) return
+        this.home.destroy()
+        this.home = null
+
+    }
+
+
     /**
      * Events.
      */
+
+    onPreloaded() {
+        this.onChangeEnd(this.template)
+    }
+
     onChangeStart() {
     }
 
 
-    onChangeEnd() {
+    onChangeEnd(template) {
+        console.log('call change end with template', template);
+        this.template = template
+        
         if (this.template == 'home') {
             this.createHome()
+        } else if (this.home) {
+            this.destroyHome()
         }
+
     }
 
     onResize() {
@@ -104,6 +123,14 @@ export default class Canvas {
     onWheel(event) {
         if (this.home) {
             this.home.onWheel(event)
+        }
+    }
+
+
+
+    addEventListeners() {
+        if (this.home) {
+            this.home.addEventListeners()
         }
     }
 
