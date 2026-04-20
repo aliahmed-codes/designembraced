@@ -106,6 +106,8 @@ export default class Canvas {
         }
 
         if (this.template == 'case') {
+            this.destroyCase()
+
             this.createCase()
         } else if (this.case) {
             this.destroyCase()
@@ -141,6 +143,10 @@ export default class Canvas {
             this.home.onResize(values)
         }
 
+        if (this.case) {
+            this.case.onResize(values)
+        }
+
     }
 
 
@@ -159,11 +165,14 @@ export default class Canvas {
     }
 
 
-    update() {
+    update(scroll) {
         if (this.home) {
             this.home.update()
         }
 
+        if (this.case) {
+            this.case.update(scroll)
+        }
 
         this.renderer.render(this.scene, this.camera)
     }

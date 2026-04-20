@@ -38,7 +38,7 @@ block content
 
             .case_medias
                 .case_medias_wrapper   
-                    each media in project.caseMedia || []
+                    each media, index in project.caseMedia || []
                         .case_media_container(class='media_' + (media.layout || 'video'))
                             .case_media
                                 if media._type === 'image'
@@ -50,8 +50,8 @@ block content
                                         source.case_media_media_image(src=media.asset.url type='video/mp4')
 
                                 .media_count    
-                                    span  IMG. 
-                                        span 01/07
+                                    span #{media._type === 'image'? "IMG." : "VID."} 
+                                        span #{String(index+1).padStart(2, '0')}/07
 
             .next_case_heading
                 h3 NXT PROJ 

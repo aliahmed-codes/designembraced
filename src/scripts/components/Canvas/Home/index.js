@@ -77,7 +77,7 @@ export default class Home {
 
 
 
-    onWheel({ pixelX, pixelY }) {
+    onWheel({ pixelY }) {
         this.scroll.target += pixelY
 
         clearTimeout(this.snapTimeout)

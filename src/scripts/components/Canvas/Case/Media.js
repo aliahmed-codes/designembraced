@@ -1,13 +1,11 @@
 import * as THREE from "three"
-import gsap from "gsap"
-import Prefix from 'prefix'
 
-import fragment from "../../../../shaders/plane-fragment.glsl"
-import vertex from "../../../../shaders/plane-vertex.glsl"
+import fragment from "../../../../shaders/case-plane-fragment.glsl"
+import vertex from "../../../../shaders/case-plane-vertex.glsl"
 
 
 export default class Media {
-    constructor({ element, index, scene, sizes, geometry, textureLoader }) {
+    constructor({ element, index, scene, sizes, geometry, textureLoader, onVideoReady }) {
 
         this.element = element
         this.index = index
@@ -15,41 +13,60 @@ export default class Media {
         this.sizes = sizes
         this.geometry = geometry
         this.textureLoader = textureLoader
+        this.onVideoReady = onVideoReady
 
-        this.extra = {
-            x: 0,
-            y: 0
-        }
+        this.isVideo = this.element.tagName === 'VIDEO'
 
         this.createTexture()
         this.createMaterial()
         this.createMesh()
-
-
         this.createBounds({ sizes: this.sizes })
-
-        this.addEventListeners()
-
-        this.transformPrefix = Prefix('transform')
-
     }
 
 
     createTexture() {
-        this.image = this.element.querySelector('img')
+        this.image = this.element
 
-        this.media = new Image()
-        this.media.crossOrigin = "anonymous"
-        this.media.src = this.image.src
+        if (this.isVideo) {
+            this.element.crossOrigin = "anonymous"
+            this.element.muted = true
+            this.element.loop = true
+            this.element.playsInline = true
+            this.element.load()
+            this.element.play().catch(() => { })
 
-        this.texture = new THREE.Texture(this.media)
+            this.texture = new THREE.VideoTexture(this.element)
+            this.texture.minFilter = THREE.LinearFilter
+            this.texture.magFilter = THREE.LinearFilter
 
-        this.media.onload = () => {
-            this.texture.needsUpdate = true
-            this.material.uniforms.uImageSizes.value.set(
-                this.media.naturalWidth,
-                this.media.naturalHeight
-            )
+            const onMetadata = () => {
+                this.material.uniforms.uImageSizes.value.set(
+                    this.element.videoWidth,
+                    this.element.videoHeight
+                )
+                if (this.onVideoReady) this.onVideoReady()
+            }
+
+            if (this.element.readyState >= 1) {
+                onMetadata()
+            } else {
+                this.element.addEventListener('loadedmetadata', onMetadata, { once: true })
+            }
+
+        } else {
+            this.media = new Image()
+            this.media.crossOrigin = "anonymous"
+            this.media.src = this.element.src
+
+            this.texture = new THREE.Texture(this.media)
+
+            this.media.onload = () => {
+                this.texture.needsUpdate = true
+                this.material.uniforms.uImageSizes.value.set(
+                    this.media.naturalWidth,
+                    this.media.naturalHeight
+                )
+            }
         }
     }
 
@@ -62,31 +79,22 @@ export default class Media {
                 tMap: { value: this.texture },
                 uImageSizes: { value: new THREE.Vector2(0, 0) },
                 uPlaneSizes: { value: new THREE.Vector2(0, 0) },
-                uHover: { value: 0 },
-                uMouse: { value: new THREE.Vector2(0.5, 0.5) }
             }
         })
     }
 
-
     createMesh() {
         this.mesh = new THREE.Mesh(this.geometry, this.material)
-
         this.scene.add(this.mesh)
-
     }
 
     createBounds({ sizes }) {
         this.sizes = sizes
-
         this.bounds = this.image.getBoundingClientRect()
-
         this.updateScale()
         this.updateX()
         this.updateY()
-
     }
-
 
     updateScale() {
         this.width = this.bounds.width / window.innerWidth
@@ -98,82 +106,21 @@ export default class Media {
         this.material.uniforms.uPlaneSizes.value.set(this.mesh.scale.x, this.mesh.scale.y)
     }
 
-    updateX(x = 0) {
-        this.x = (this.bounds.left + x) / window.innerWidth
-
-        this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x * this.sizes.width) + this.extra.x
+    updateX() {
+        this.x = this.bounds.left / window.innerWidth
+        this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x * this.sizes.width)
     }
-
 
     updateY(y = 0) {
-
         this.y = (this.bounds.top + y) / window.innerHeight
-
-        this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) + this.extra.y
+        this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height)
     }
 
-
-
-    onResize(sizes) {
-        this.extra.x = 0
-        this.extra.y = 0
-        this.element.style.transform = ''
-        this.createBounds(sizes)
+    onResize({ sizes }) {
+        this.createBounds({ sizes })
     }
 
-    onMouseEnter() {
-        gsap.to(this.material.uniforms.uHover, {
-            value: 1,
-            duration: 0.5,
-            ease: 'power3.out'
-        })
-    }
-
-    onMouseMove(e) {
-        const rect = this.image.getBoundingClientRect()
-
-        const x = (e.clientX - rect.left) / rect.width
-        const y = 1.0 - (e.clientY - rect.top) / rect.height
-
-        gsap.to(this.material.uniforms.uMouse.value, {
-            x,
-            y,
-            duration: 0.5,
-            ease: 'power3.out'
-        })
-    }
-
-    onMouseleave() {
-        gsap.to(this.material.uniforms.uHover, {
-            value: 0,
-            duration: 0.5,
-            ease: 'power3.out'
-        })
-    }
-
-    addEventListeners() {
-        this.element.addEventListener('mouseenter', this.onMouseEnter.bind(this))
-        this.element.addEventListener('mousemove', this.onMouseMove.bind(this))
-        this.element.addEventListener('mouseleave', this.onMouseleave.bind(this))
-    }
-
-
-    removeEventListeners() {
-        this.element.removeEventListener('mouseenter', this.onMouseEnter.bind(this));
-        this.element.removeEventListener('mousemove', this.onMouseMove.bind(this));
-        this.element.removeEventListener('mouseleave', this.onMouseleave.bind(this));
-    }
-
-    update(scroll, xOffset = 0, rotation = 0) {
-        this.extra.x = (xOffset / window.innerWidth) * this.sizes.width
-        this.updateX()
+    update(scroll) {
         this.updateY(-scroll)
-
-        this.mesh.rotation.z = -rotation
-
-        const extraYPx = -(this.extra.y * (window.innerHeight / this.sizes.height))
-        const rotateDeg = rotation * (180 / Math.PI)
-
-        this.element.style[this.transformPrefix] = `translateX(${xOffset}px) translateY(${extraYPx}px) rotate(${rotateDeg}deg)`
     }
 }

@@ -2,8 +2,8 @@ import * as THREE from "three"
 import gsap from "gsap"
 import Prefix from 'prefix'
 
-import fragment from "../../../../shaders/plane-fragment.glsl"
-import vertex from "../../../../shaders/plane-vertex.glsl"
+import fragment from "../../../../shaders/home-plane-fragment.glsl"
+import vertex from "../../../../shaders/home-plane-vertex.glsl"
 
 
 export default class Media {
