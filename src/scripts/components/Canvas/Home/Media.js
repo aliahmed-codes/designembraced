@@ -58,6 +58,7 @@ export default class Media {
             vertexShader: vertex,
             fragmentShader: fragment,
             transparent: true,
+            side: THREE.DoubleSide,
             uniforms: {
                 tMap: { value: this.texture },
                 uImageSizes: { value: new THREE.Vector2(0, 0) },
@@ -165,13 +166,13 @@ export default class Media {
         this.element.removeEventListener('mouseleave', this.onMouseleave.bind(this));
     }
 
-    update(scroll, xOffset = 0, rotation = 0, normalizedY = 0) {
+    update(scroll, xOffset = 0, rotation = 0, normalizedY = 0, scrollNY = 0) {
         this.extra.x = (xOffset / window.innerWidth) * this.sizes.width
         this.updateX()
         this.updateY(-scroll)
 
         this.mesh.rotation.z = -rotation
-        this.material.uniforms.uNormalizedY.value = normalizedY
+        this.material.uniforms.uNormalizedY.value = scrollNY
 
         const extraYPx = -(this.extra.y * (window.innerHeight / this.sizes.height))
         const rotateDeg = rotation * (180 / Math.PI)

@@ -145,7 +145,8 @@ export default class Home {
                 const xOffset = R * (Math.cos(theta) - 1)
 
                 const normalizedY = Math.max(-1, Math.min(1, d / R))
-                media.update(this.scroll.current, xOffset, theta, normalizedY)
+                const scrollNY = Math.max(-1, Math.min(1, d / window.innerHeight))
+                media.update(this.scroll.current, xOffset, theta, normalizedY, scrollNY)
             })
         }
 

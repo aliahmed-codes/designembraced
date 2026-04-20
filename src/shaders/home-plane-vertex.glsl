@@ -1,8 +1,12 @@
+precision highp float;
+
 uniform float uHover;
 uniform vec2 uMouse;
 uniform float uNormalizedY;
 
 varying vec2 vUv;
+
+#define PI 3.14159265358979
 
 void main()
 {
@@ -10,29 +14,38 @@ void main()
 
     vec3 pos = position;
 
-    float center = 0.5;
-    float strength = 5. * abs(uNormalizedY);
+    float foldProgress = clamp(abs(uNormalizedY), 0.0, 1.0);
+    float rollRadius   = 0.3;
 
-    if(uNormalizedY < 0.0)
+    if(foldProgress > 0.001)
     {
-        // above center — bottom half bends, 0 at center → 1 at top
-        if(uv.y < center)
+        if(uNormalizedY < 0.0)
         {
-            float s = (center - uv.y) / center;
-            s = smoothstep(0.0, 1.0, s * 0.8);
-            // s = pow(s, 1.0);
-            pos.z += s * strength;
+            // exiting upward — crease rises from bottom
+            float foldLine  = foldProgress;
+            float foldLocal = foldLine - 0.5;
+
+            if(uv.y < foldLine)
+            {
+                float d   = foldLocal - pos.y;
+                float phi = min(d / rollRadius, PI);
+                pos.y = foldLocal - rollRadius * sin(phi);
+                pos.z += rollRadius * (1.0 - cos(phi));
+            }
         }
-    }
-    else if(uNormalizedY > 0.0)
-    {
-        // below center — top half bends, 0 at center → 1 at bottom
-        if(uv.y > center)
+        else
         {
-            float s = (uv.y - center) / center;
-            s = smoothstep(0.0, 1.0, s * 0.8);
-            // s = pow(s, 1.0);
-            pos.z += s * strength;
+            // entering from below — crease descends from top
+            float foldLine  = 1.0 - foldProgress;
+            float foldLocal = foldLine - 0.5;
+
+            if(uv.y > foldLine)
+            {
+                float d   = pos.y - foldLocal;
+                float phi = min(d / rollRadius, PI);
+                pos.y = foldLocal + rollRadius * sin(phi);
+                pos.z += rollRadius * (1.0 - cos(phi));
+            }
         }
     }
 
