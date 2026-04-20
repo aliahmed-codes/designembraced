@@ -148,9 +148,13 @@
     .case_medias_wrapper {
       @extend %grid-8;
 
-      margin-top: 5.6rem;
+      margin-top: 17.5rem;
       max-width: 144rem;
       margin-inline: auto;
+
+      @include media("<=tablet") {
+        margin-top: 5.6rem;
+      }
     }
 
     .case_media_container {

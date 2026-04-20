@@ -26,12 +26,14 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        padding-top: calc((100vh - 80vh) / 2);
+        padding-bottom: calc((100vh - 80vh) / 2);
 
         .case_gallery_link_wrapper {
           @extend %center;
 
           width: 100vw;
-          height: 100vh;
+          height: 80vh;
         }
 
         .case_gallery_link {

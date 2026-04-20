@@ -81,7 +81,7 @@ export default class Home {
         this.scroll.target += pixelY
 
         clearTimeout(this.snapTimeout)
-        this.snapTimeout = setTimeout(() => this.snapToNearest(), 150)
+        this.snapTimeout = setTimeout(() => this.snapToNearest(), 200)
     }
 
     snapToNearest() {
@@ -144,7 +144,8 @@ export default class Home {
                 const theta = Math.asin(Math.max(-1, Math.min(1, d / R)))
                 const xOffset = R * (Math.cos(theta) - 1)
 
-                media.update(this.scroll.current, xOffset, theta)
+                const normalizedY = Math.max(-1, Math.min(1, d / R))
+                media.update(this.scroll.current, xOffset, theta, normalizedY)
             })
         }
 

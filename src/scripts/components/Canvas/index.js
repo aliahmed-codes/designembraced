@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import Home from "./Home"
+import Case from "./Case"
 
 export default class Canvas {
     constructor({ template }) {
@@ -63,6 +64,24 @@ export default class Canvas {
         this.home = null
 
     }
+    /**
+     * Case.
+     */
+
+    createCase() {
+        this.case = new Case({
+            scene: this.scene,
+            sizes: this.sizes
+        })
+    }
+
+
+    destroyCase() {
+        if (!this.case) return
+        this.case.destroy()
+        this.case = null
+
+    }
 
 
     /**
@@ -78,13 +97,18 @@ export default class Canvas {
 
 
     onChangeEnd(template) {
-        console.log('call change end with template', template);
         this.template = template
-        
+
         if (this.template == 'home') {
             this.createHome()
         } else if (this.home) {
             this.destroyHome()
+        }
+
+        if (this.template == 'case') {
+            this.createCase()
+        } else if (this.case) {
+            this.destroyCase()
         }
 
     }
