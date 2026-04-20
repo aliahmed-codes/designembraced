@@ -5,7 +5,7 @@ import vertex from "../../../../shaders/case-plane-vertex.glsl"
 
 
 export default class Media {
-    constructor({ element, index, scene, sizes, geometry, textureLoader, onVideoReady }) {
+    constructor({ element, index, scene, sizes, geometry, textureLoader, foldEnabled = true, onVideoReady }) {
 
         this.element = element
         this.index = index
@@ -13,9 +13,10 @@ export default class Media {
         this.sizes = sizes
         this.geometry = geometry
         this.textureLoader = textureLoader
+        this.foldEnabled = foldEnabled
         this.onVideoReady = onVideoReady
 
-        this.isVideo = this.element.tagName === 'VIDEO'
+        this.isVideo = this.element?.tagName === 'VIDEO'
 
         this.createTexture()
         this.createMaterial()
@@ -75,10 +76,12 @@ export default class Media {
             vertexShader: vertex,
             fragmentShader: fragment,
             transparent: true,
+            side: THREE.DoubleSide,
             uniforms: {
                 tMap: { value: this.texture },
                 uImageSizes: { value: new THREE.Vector2(0, 0) },
                 uPlaneSizes: { value: new THREE.Vector2(0, 0) },
+                uNormalizedY: { value: 0 },
             }
         })
     }
@@ -122,5 +125,12 @@ export default class Media {
 
     update(scroll) {
         this.updateY(-scroll)
+
+        if (this.foldEnabled) {
+            const visualCenterY = this.bounds.top + this.bounds.height / 2 - scroll
+            const d = visualCenterY - window.innerHeight / 2
+            const normalizedY = Math.max(-1, Math.min(1, d / window.innerHeight))
+            this.material.uniforms.uNormalizedY.value = normalizedY
+        }
     }
 }

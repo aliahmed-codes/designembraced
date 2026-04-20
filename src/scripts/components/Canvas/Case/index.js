@@ -13,10 +13,17 @@ export default class Case {
         this.scene = scene
         this.sizes = sizes
 
-        this.caseBannerImage = document.querySelectorAll('.case_banner_media img')
+        this.caseBannerImage = document.querySelector('#case_banner_media img')
+        this.caseNextBannerImage = document.querySelector('#case_next_banner_media img')
         this.caseMediaImages = document.querySelectorAll('.case_media_media img')
         this.caseMediaVideos = document.querySelectorAll('video.case_media_media')
-        this.mediasElements = [...this.caseBannerImage, ...this.caseMediaImages, ...this.caseMediaVideos]
+        this.mediasElements = [
+            this.caseBannerImage,
+            this.caseNextBannerImage,
+            ...this.caseMediaImages,
+            ...(this.caseMediaVideos || [])
+        ].filter(element => element !== null);
+        this.bannerSet = new Set([this.caseBannerImage, this.caseNextBannerImage])
 
         this.createGeometry()
         this.createMedias()
@@ -37,6 +44,7 @@ export default class Case {
                 sizes: this.sizes,
                 geometry: this.geometry,
                 textureLoader: this.textureLoader,
+                foldEnabled: !this.bannerSet.has(element),
                 onVideoReady: () => this.recaptureAllBounds()
             })
         })

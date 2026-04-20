@@ -8,7 +8,7 @@ block content
         .case_wrapper   
             .case_hero
                 .case_hero_banner_wrapper
-                    figure.case_banner_media  
+                    figure.case_banner_media#case_banner_media  
                         img.case_banner_media_image(src=imageUrl(project.mainBanner))
 
                 .case_hero_wrapper
@@ -63,7 +63,7 @@ block content
 
             .next_case
                 .next_case_banner_wrapper
-                    figure.case_banner_media
+                    figure.case_banner_media#case_next_banner_media
                         a.case_banner_media_link(href=Link(nextProject.slug))  
                             img.case_banner_media_image(src=imageUrl(nextProject.mainBanner))
                             .case_banner_count_wrapper
