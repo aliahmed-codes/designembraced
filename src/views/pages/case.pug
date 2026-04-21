@@ -13,7 +13,7 @@ block content
 
                 .case_hero_wrapper
                     .case_count_wrapper
-                        h1.case_count_heading PR.#{String(project.caseIndex).padStart(2, '0')}   
+                        h1.case_count_heading(data-animation="title") PR.#{String(project.caseIndex).padStart(2, '0')}   
                             span.case_total_count /#{String(projects.length).padStart(2, '0')}
                         p.case_name!=project.projectName.replace(/\n/g, '<br>')
 

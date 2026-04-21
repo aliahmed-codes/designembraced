@@ -11,7 +11,7 @@
   @extend %page;
   @extend %cover;
 
-  img{
+  img {
     opacity: 0;
   }
 
@@ -29,11 +29,29 @@
         padding-top: calc((100vh - 80vh) / 2);
         padding-bottom: calc((100vh - 80vh) / 2);
 
+        @include media("<=tablet") {
+          padding-top: calc((100vh - 100vh) / 2);
+          padding-bottom: calc((100vh - 100vh) / 2);
+        }
+
+        @include media("<=phone") {
+          padding-top: calc((100vh - 80vh) / 2);
+          padding-bottom: calc((100vh - 80vh) / 2);
+        }
+
         .case_gallery_link_wrapper {
           @extend %center;
 
           width: 100vw;
           height: 80vh;
+
+          @include media("<=tablet") {
+            height: 100vh;
+          }
+
+          @include media("<=phone") {
+            height: 80vh;
+          }
         }
 
         .case_gallery_link {

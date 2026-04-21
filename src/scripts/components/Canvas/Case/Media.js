@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import device from "../../../classes/DeviceDetection"
 
 import fragment from "../../../../shaders/case-plane-fragment.glsl"
 import vertex from "../../../../shaders/case-plane-vertex.glsl"
@@ -126,7 +127,7 @@ export default class Media {
     update(scroll) {
         this.updateY(-scroll)
 
-        if (this.foldEnabled) {
+        if (this.foldEnabled && !device.isTouch) {
             const visualCenterY = this.bounds.top + this.bounds.height / 2 - scroll
             const d = visualCenterY - window.innerHeight / 2
             const normalizedY = Math.max(-1, Math.min(1, d / window.innerHeight))

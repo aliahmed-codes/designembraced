@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import gsap from "gsap"
 import Prefix from 'prefix'
+import device from "../../../classes/DeviceDetection"
 
 import fragment from "../../../../shaders/home-plane-fragment.glsl"
 import vertex from "../../../../shaders/home-plane-vertex.glsl"
@@ -154,6 +155,7 @@ export default class Media {
     }
 
     addEventListeners() {
+        if (device.isTouch) return
         this.element.addEventListener('mouseenter', this.onMouseEnter.bind(this))
         this.element.addEventListener('mousemove', this.onMouseMove.bind(this))
         this.element.addEventListener('mouseleave', this.onMouseleave.bind(this))
