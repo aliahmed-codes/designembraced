@@ -57,7 +57,7 @@ class App {
 
     createPages() {
         this.pages = {
-            "home": new Home(),
+            "home": new Home({ canvas: this.canvas }),
             "about": new About(),
             "case": new Case(),
         }

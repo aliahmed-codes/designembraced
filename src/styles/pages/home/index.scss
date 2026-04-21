@@ -11,6 +11,60 @@
   @extend %page;
   @extend %cover;
 
+  .home_preloader {
+    @extend %center;
+
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    background: #fff;
+    color: #1a1a1a;
+    padding: 4rem;
+    gap: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+
+    @include media(">tablet") {
+      display: none;
+    }
+
+    .home_preloader_heading {
+      @extend %title-87;
+
+      text-align: end;
+      font-size: 6.5rem;
+
+      .line {
+        width: 7rem;
+        height: 1rem;
+        background: currentColor;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .middle_line {
+        margin-right: 2%;
+      }
+    }
+
+    .home_preloader_content {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3.5rem;
+
+      span {
+        @extend %text-11;
+
+        letter-spacing: -0.043431rem;
+        display: block;
+      }
+    }
+  }
+
   @include media(">tablet") {
     img {
       opacity: 0;
@@ -28,22 +82,21 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        padding-top: calc((100vh - 80vh) / 2);
-        padding-bottom: calc((100vh - 80vh) / 2);
+        justify-content: center;
+        padding-block: 10vh;
+        gap: 10vh;
 
         @include media("<=tablet") {
-          padding-top: calc((100vh - 100vh) / 2);
-          padding-bottom: calc((100vh - 100vh) / 2);
+          padding-block: 0;
           gap: 10rem;
         }
 
         @include media("<=phone") {
-          padding-top: calc((100vh - 100vh) / 2);
-          padding-bottom: calc((100vh - 100vh) / 2);
+          padding-block: 0;
           gap: 5rem;
         }
 
-        .case_gallery_link_wrapper {
+.case_gallery_link_wrapper {
           @extend %center;
 
           width: 100vw;
@@ -56,12 +109,22 @@
           @include media("<=phone") {
             height: 100vh;
           }
+
+&:last-child {
+            margin-bottom: 10vh;
+
+            @include media("<=tablet") {
+              margin-bottom: 10rem;
+            }
+
+            @include media("<=phone") {
+              margin-bottom: 5rem;
+            }
+          }
         }
 
         .case_gallery_link {
           position: relative;
-
-          margin-block: 5vh;
 
           .case_gallery_media {
             height: 54vh;

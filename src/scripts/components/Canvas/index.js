@@ -129,6 +129,7 @@ export default class Canvas {
 
         if (this.template == 'home') {
             this.createHome()
+            this.addEventListeners()
         } else if (this.home) {
             this.destroyHome()
         }
