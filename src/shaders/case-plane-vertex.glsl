@@ -30,10 +30,16 @@ void main()
                 pos.y = foldLocal - rollRadius * sin(phi);
                 pos.z += rollRadius * (1.0 - cos(phi));
             }
+            if(uv.y > foldLine)
+            {
+                float d = pos.y - foldLocal;
+                float phi = min(d / rollRadius, PI);
+                pos.y = foldLocal + rollRadius * sin(phi);
+                pos.z += rollRadius * (1.0 - cos(phi));
+            }
         }
         else
         {
-            // entering from below — crease descends from top, plane unrolls
             float foldLine = 1.0 - foldProgress;
             float foldLocal = foldLine - 0.5;
 
@@ -42,6 +48,13 @@ void main()
                 float d = pos.y - foldLocal;
                 float phi = min(d / rollRadius, PI);
                 pos.y = foldLocal + rollRadius * sin(phi);
+                pos.z += rollRadius * (1.0 - cos(phi));
+            }
+            if(uv.y < foldLine)
+            {
+                float d = foldLocal - pos.y;
+                float phi = min(d / rollRadius, PI);
+                pos.y = foldLocal - rollRadius * sin(phi);
                 pos.z += rollRadius * (1.0 - cos(phi));
             }
         }
