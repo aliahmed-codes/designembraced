@@ -14,12 +14,17 @@
     // @extend %cover;
   }
 
+  img{
+    opacity: 0;
+  }
+
   .about_bg_media {
     z-index: 0;
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
 
     &_image {
       width: 100%;

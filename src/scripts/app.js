@@ -161,6 +161,12 @@ class App {
     }
 
 
+    onMouseMove(event) {
+        if (this.canvas && this.canvas.onMouseMove) {
+            this.canvas.onMouseMove(event)
+        }
+    }
+
     onWheel(event) {
         const normalizedWheel = normalizeWheel(event)
 
@@ -206,6 +212,7 @@ class App {
 
 
         window.addEventListener('mousewheel', this.onWheel.bind(this))
+        window.addEventListener('mousemove', this.onMouseMove.bind(this))
         window.addEventListener('resize', this.onResize.bind(this))
     }
 

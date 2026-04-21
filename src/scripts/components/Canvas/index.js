@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import Home from "./Home"
 import Case from "./Case"
+import About from "./About"
 
 export default class Canvas {
     constructor({ template }) {
@@ -85,6 +86,26 @@ export default class Canvas {
 
 
     /**
+     * About.
+     */
+
+
+    createAbout() {
+        this.about = new About({
+            scene: this.scene,
+            sizes: this.sizes
+        })
+    }
+
+    destroyAbout() {
+        if (!this.about) return
+        this.about.destroy()
+        this.about = null
+
+    }
+
+
+    /**
      * Events.
      */
 
@@ -113,6 +134,11 @@ export default class Canvas {
             this.destroyCase()
         }
 
+        if (this.template == 'about') {
+            this.createAbout()
+        } else if (this.about) {
+            this.destroyAbout()
+        }
     }
 
     onResize() {
@@ -147,12 +173,22 @@ export default class Canvas {
             this.case.onResize(values)
         }
 
+        if (this.about) {
+            this.about.onResize(values)
+        }
+
     }
 
 
     onWheel(event) {
         if (this.home) {
             this.home.onWheel(event)
+        }
+    }
+
+    onMouseMove(event) {
+        if (this.about) {
+            this.about.onMouseMove(event)
         }
     }
 
@@ -172,6 +208,10 @@ export default class Canvas {
 
         if (this.case) {
             this.case.update(scroll)
+        }
+
+        if (this.about) {
+            this.about.update(scroll)
         }
 
         this.renderer.render(this.scene, this.camera)
