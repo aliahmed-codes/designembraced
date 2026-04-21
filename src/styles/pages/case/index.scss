@@ -19,9 +19,11 @@
     }
   }
 
-  img,
-  video {
-    opacity: 0;
+  @include media(">tablet") {
+    img,
+    video {
+      opacity: 0;
+    }
   }
 
   .case_hero {

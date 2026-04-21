@@ -22,10 +22,11 @@ export default class Media {
             y: 0
         }
 
+        this.mobileNameEl = this.element.querySelector('.case_gallery_name--mobile')
+
         this.createTexture()
         this.createMaterial()
         this.createMesh()
-
 
         this.createBounds({ sizes: this.sizes })
 

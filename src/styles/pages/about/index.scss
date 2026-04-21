@@ -15,8 +15,10 @@
     // @extend %cover;
   }
 
-  img {
-    opacity: 0;
+  @include media(">tablet") {
+    img {
+      opacity: 0;
+    }
   }
 
   .about_bg_media {

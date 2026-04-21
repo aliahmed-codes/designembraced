@@ -179,6 +179,10 @@ class App {
         if (this.page && this.page.onWheel) (
             this.page.onWheel(normalizedWheel)
         )
+
+        if (this.preloader && this.preloader.onWheel) (
+            this.preloader.onWheel(normalizedWheel)
+        )
     }
 
     /**

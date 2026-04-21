@@ -1,8 +1,31 @@
 .preloader(style='background-color: ' + (colors && colors.backgroundColor) + '; color: ' + (colors && colors.textColor))
     .preloader_wrapper
-        figure.preloader_loading_media 
+        figure.preloader_loading_media
             img.preloader_loading_media_image(src="../assets/media/loader.gif" alt="")
         .preloader_loading_line
-        h1.preloader_text 
-            span.current_count PR.01     
+        h1.preloader_text
+            span.current_count PR.01
             span.total_count /#{String(projects.length).padStart(2, '0')}
+
+    .preloader--mobile
+        h2.preloader_mobile_heading(data-animation="title")
+            span= about.heroText.topLine
+            br
+            span.middle_line.line
+            span= about.heroText.middleLine
+            br
+            span= about.heroText.bottomLine
+            br
+            span= about.heroText.dateStamp
+        .preloader_mobile_content
+            .preloader_mobile_contact
+                span(data-animation="paragraph")=navigation.availability
+                a(href=`mailto:${navigation.contact.email}`)
+                    span(data-animation="paragraph")=navigation.contact.email
+                a(href=`tel:${navigation.contact.phone}`)
+                    span(data-animation="paragraph")=navigation.contact.phone
+
+            .preloader_mobile_services
+                each service in navigation.services
+                    span(data-animation="paragraph")= service
+

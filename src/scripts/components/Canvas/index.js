@@ -2,6 +2,7 @@ import * as THREE from "three"
 import Home from "./Home"
 import Case from "./Case"
 import About from "./About"
+import device from "../../classes/DeviceDetection"
 
 export default class Canvas {
     constructor({ template }) {
@@ -44,7 +45,7 @@ export default class Canvas {
             antialias: true
         })
 
-        document.body.appendChild(this.renderer.domElement)
+        if (!device.isTouch) document.body.appendChild(this.renderer.domElement)
     }
 
     /**
@@ -56,6 +57,12 @@ export default class Canvas {
             scene: this.scene,
             sizes: this.sizes
         })
+
+        this.home.onResize({ sizes: this.sizes })
+
+        if (device.isTouch) {
+            this.home.enterFromBelow()
+        }
     }
 
 
@@ -126,18 +133,19 @@ export default class Canvas {
             this.destroyHome()
         }
 
-        if (this.template == 'case') {
-            this.destroyCase()
+        if (!device.isTouch) {
+            if (this.template == 'case') {
+                this.destroyCase()
+                this.createCase()
+            } else if (this.case) {
+                this.destroyCase()
+            }
 
-            this.createCase()
-        } else if (this.case) {
-            this.destroyCase()
-        }
-
-        if (this.template == 'about') {
-            this.createAbout()
-        } else if (this.about) {
-            this.destroyAbout()
+            if (this.template == 'about') {
+                this.createAbout()
+            } else if (this.about) {
+                this.destroyAbout()
+            }
         }
     }
 
@@ -214,6 +222,6 @@ export default class Canvas {
             this.about.update(scroll)
         }
 
-        this.renderer.render(this.scene, this.camera)
+        if (!device.isTouch) this.renderer.render(this.scene, this.camera)
     }
 }

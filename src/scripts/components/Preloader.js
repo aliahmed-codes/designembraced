@@ -1,5 +1,13 @@
 import gsap from "gsap";
+import { map } from "lodash";
+
 import Component from "../classes/Component";
+import device from "../classes/DeviceDetection";
+import Title from "../classes/Title";
+import Paragraph from "../classes/Paragraph";
+
+import { splitByLines } from "../utils/text";
+
 
 export default class Preloader extends Component {
     constructor({ template }) {
@@ -13,6 +21,8 @@ export default class Preloader extends Component {
                 navigation: document.querySelector('.navigation'),
                 footer: document.querySelector(".footer"),
 
+                animationsTitles: '[data-animation="title"]',
+                animationsParagraphs: '[data-animation="paragraph"]',
 
                 firstCaseHeading: document.querySelector('.case_1 .case_gallery_count_heading'),
 
@@ -31,6 +41,9 @@ export default class Preloader extends Component {
 
         this.createLoader()
 
+        this.createTabletLoader()
+
+
     }
 
 
@@ -42,8 +55,17 @@ export default class Preloader extends Component {
 
         this.elements.totalCont.textContent = `/${String(this.state.totalProjects).padStart(2, '0')}`
 
-        if (this.template === "home") this.createHomeHeading()
+        if (device.isTouch && this.template !== 'home') {
+            this.element.style.opacity = '0'
+            this.element.style.pointerEvents = 'none'
+            return
+        }
+
+        if (this.template === "home" && !device.isTouch) this.createHomeHeading()
     }
+
+
+
 
     createHomeHeading() {
 
@@ -58,12 +80,86 @@ export default class Preloader extends Component {
         })
     }
 
+
+    createTabletLoader() {
+        if (!device.isTouch || this.template !== 'home') return
+
+        this.animationsIn()
+
+        this.dismissed = false
+
+        const interact = () => {
+            if (this.dismissed) return
+            this.dismissed = true
+            window.removeEventListener('touchstart', interact)
+            window.removeEventListener('click', interact)
+            window.removeEventListener('wheel', interact)
+            this.onTabletDismiss()
+        }
+
+        window.addEventListener('touchstart', interact)
+        window.addEventListener('click', interact)
+        window.addEventListener('wheel', interact)
+    }
+
+    animationsIn() {
+
+        this.animations = []
+
+        const toArray = el => !el ? [] : el instanceof NodeList ? Array.from(el) : Array.isArray(el) ? el : [el]
+
+        this.animationsTitles = toArray(this.elements.animationsTitles).map(element => {
+            splitByLines(element)
+
+            return new Title({ element })
+        })
+
+        this.animations.push(...this.animationsTitles)
+
+        this.animationsParagraphs = toArray(this.elements.animationsParagraphs).map(element => {
+            splitByLines(element)
+
+            return new Paragraph({ element })
+        })
+
+        this.animations.push(...this.animationsParagraphs)
+
+    }
+
+    animationsOut() {
+        if (!this.animations || !this.animations.length) {
+            return Promise.resolve()
+        }
+
+        const promises = map(this.animations, animation => {
+            const spans = animation.element.querySelectorAll('span span')
+
+            return new Promise(resolve => {
+                if (spans.length) {
+                    gsap.to(spans, {
+                        y: '-100%',
+                        duration: 0.8,
+                        ease: 'power3.in',
+                        stagger: 0.03,
+                        onComplete: resolve
+                    })
+                } else {
+                    resolve()
+                }
+            })
+        })
+
+        return Promise.all(promises)
+    }
+
+
     createLoader() {
+        if (device.isTouch) return
+
         this.prepareAssets()
         this.createCache()
         this.startLoading()
     }
-
 
     createCache() {
         this.cache = new Map()
@@ -78,6 +174,13 @@ export default class Preloader extends Component {
 
 
     async startLoading() {
+        if (device.isTouch) {
+            this.loadProjects().catch(() => { })
+            this.prefetchSilentPages().catch(() => { })
+            this.onLoaded()
+            return
+        }
+
         await Promise.all([
             this.loadProjects(),
             this.prefetchSilentPages()
@@ -218,8 +321,8 @@ export default class Preloader extends Component {
         this.elements.footer.classList.remove('preloading')
     }
 
-    onLoaded() {
 
+    onDesktopLoad() {
         if (this.template === "home")
             this.elements.currentCont.textContent = `PR.${String(1).padStart(2, '0')}`
 
@@ -240,7 +343,34 @@ export default class Preloader extends Component {
             await this.destroy()
             this.emit('completed', this.cache)
         })
+    }
 
+
+    onTabletLoad() {
+        if (this.template !== 'home') {
+            this.updateComponents()
+            this.emit('completed', this.cache)
+            this.destroy()
+        }
+    }
+
+    async onTabletDismiss() {
+        await this.animationsOut()
+
+        gsap.to(this.element, {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+            onComplete: () => {
+                this.updateComponents()
+                this.emit('completed', this.cache)
+                this.destroy()
+            }
+        })
+    }
+
+    onLoaded() {
+        device.isTouch ? this.onTabletLoad() : this.onDesktopLoad()
     }
 
     destroy() {

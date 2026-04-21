@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { map } from "lodash"
 import Prefix from 'prefix'
+import device from "../../../classes/DeviceDetection"
 
 import Media from "./Media"
 
@@ -59,11 +60,16 @@ export default class Home {
 
 
     onResize(event) {
+        const savedScroll = this.scroll.current
+
+        // Reset transform before measuring so getBoundingClientRect is not offset
+        if (this.galleryElements) {
+            this.galleryElements.style[this.transformPrefix] = ''
+        }
 
         this.galleryBounds = this.galleryElements.getBoundingClientRect()
 
-        this.sizes = event.sizes;
-
+        this.sizes = event.sizes
 
         this.gallerySizes = {
             height: this.galleryBounds.height / window.innerHeight * this.sizes.height,
@@ -73,6 +79,9 @@ export default class Home {
         this.sizes.y = this.scroll.target = 0
 
         map(this.medias, media => media.onResize(event))
+
+        // Restore scroll so any in-progress enter animation continues
+        this.scroll.current = this.scroll.last = savedScroll
     }
 
 
@@ -137,7 +146,7 @@ export default class Home {
                     }
                 }
 
-                const R = 1200
+                const R = 2000
                 const extraYPx = -(media.extra.y * (window.innerHeight / this.sizes.height))
                 const visualCenterY = media.bounds.top + media.bounds.height / 2 - this.scroll.current + extraYPx
                 const d = visualCenterY - window.innerHeight / 2
@@ -147,10 +156,20 @@ export default class Home {
                 const normalizedY = Math.max(-1, Math.min(1, d / R))
                 const scrollNY = Math.max(-1, Math.min(1, d / window.innerHeight))
                 media.update(this.scroll.current, xOffset, theta, normalizedY, scrollNY)
+
+                if (device.isTouch && media.mobileNameEl) {
+                    const absDist = Math.abs(d) / window.innerHeight
+                    media.mobileNameEl.style.opacity = Math.max(0, 1 - absDist * 2.5)
+                }
             })
         }
 
         this.scroll.last = this.scroll.current
+    }
+
+    enterFromBelow() {
+        this.scroll.current = this.scroll.last = -window.innerHeight * 0.85
+        this.scroll.target = 0
     }
 
     destroy() {

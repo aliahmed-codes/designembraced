@@ -53,6 +53,12 @@ export default class Page {
     }
 
 
+
+    /**
+     * Animations.
+     */
+
+
     animationsIn({ titles, paragraphs } = {}) {
 
         this.animations = []
@@ -105,10 +111,6 @@ export default class Page {
 
         return Promise.all(promises)
     }
-
-    /**
-     * Animations.
-     */
 
     show({ titles = true, page = true } = {}) {
 

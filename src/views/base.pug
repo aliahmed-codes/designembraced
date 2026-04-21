@@ -13,9 +13,10 @@ html(lang="en")
 
     .content#content(data-template=template data-backgroundColor=colors.backgroundColor data-color=colors.textColor)
       include ./partials/navigation
-      block content
 
-    include ./partials/footer
+      block content
+      
+      include ./partials/footer
     script.
       window.ASSETS = !{JSON.stringify(assets).replace(/<\//g, "<\\/")}
       window.PAGES = !{JSON.stringify(pages).replace(/<\//g, "<\\/")}
