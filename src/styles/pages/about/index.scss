@@ -1,5 +1,6 @@
 @use "utils/mixins" as *;
 @use "utils/variables" as *;
+@use "utils/responsive" as *;
 
 @use "shared/pages" as *;
 @use "shared/titles" as *;
@@ -14,7 +15,7 @@
     // @extend %cover;
   }
 
-  img{
+  img {
     opacity: 0;
   }
 
@@ -43,11 +44,24 @@
     z-index: 1;
     position: relative;
 
+    @include media("<=tablet") {
+      min-height: 99vh;
+    }
+
     .about_banner_wrapper {
       grid-column: 5/-1;
 
+      @include media("<=tablet") {
+        margin-top: auto;
+      }
+
       .banner_heading {
         @extend %title-87;
+
+        @include media("<=tablet") {
+          text-align: end;
+          font-size: 6.5rem;
+        }
 
         .line {
           width: 7rem;
@@ -59,6 +73,10 @@
 
         .top_line {
           margin-left: 2%;
+
+          @include media("<=tablet") {
+            display: none;
+          }
         }
 
         .middle_line {
@@ -71,8 +89,22 @@
   .section_headings {
     grid-column: 2/5;
 
+    @include media("<=tablet") {
+      grid-column: 1/-1;
+
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 2rem;
+    }
+
     .headings_top {
       display: flex;
+
+      @include media("<=tablet") {
+        grid-column: span 3;
+        flex-direction: row-reverse;
+        gap: 2rem;
+      }
 
       h3 {
         @extend %title-15;
@@ -104,6 +136,13 @@
       @extend %title-50;
 
       padding-top: 0.5rem;
+
+      @include media("<=tablet") {
+        grid-row: 2;
+        grid-column: span 3;
+        text-align: end;
+        font-size: 3.5rem;
+      }
     }
   }
 
@@ -120,11 +159,19 @@
 
   .section_content {
     grid-column: 5/-2;
+
+    @include media("<=tablet") {
+      grid-column: 3/-1;
+    }
   }
 
   .about_experiences_content {
     .content_heading {
       @extend %title-35;
+
+      @include media("<=tablet") {
+        font-size: 1.5rem;
+      }
     }
 
     .content_body {
@@ -133,6 +180,10 @@
       margin-top: 2.7rem;
       max-width: 70%;
       font-weight: 700;
+
+      @include media("<=tablet") {
+        max-width: 100%;
+      }
 
       a {
         text-decoration: underline;
@@ -144,7 +195,12 @@
   .about_brands_content {
     .content_body {
       @extend %grid-3;
+
       gap: 0;
+
+      @include media("<=tablet") {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
 
       p {
         @extend %text-11;

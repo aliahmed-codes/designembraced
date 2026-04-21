@@ -137,8 +137,10 @@ class App {
 
             await this.page.show()
 
+            this.createNavigation()
 
             this.addLinkListeners()
+
 
         }
     }
