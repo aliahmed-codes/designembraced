@@ -56,23 +56,34 @@ export default class Media {
             }
 
         } else {
-            this.media = new Image()
-            this.media.crossOrigin = "anonymous"
-            this.media.src = this.element.src
+            const cached = window.TEXTURES?.[this.element.src]
 
-            this.texture = new THREE.Texture(this.media)
+            if (cached) {
+                this.texture = cached
+                const img = cached.image
+                this._cachedSize = { w: img.naturalWidth || img.width || 0, h: img.naturalHeight || img.height || 0 }
+            } else {
+                this.media = new Image()
+                this.media.crossOrigin = "anonymous"
+                this.media.src = this.element.src
 
-            this.media.onload = () => {
-                this.texture.needsUpdate = true
-                this.material.uniforms.uImageSizes.value.set(
-                    this.media.naturalWidth,
-                    this.media.naturalHeight
-                )
+                this.texture = new THREE.Texture(this.media)
+
+                this.media.onload = () => {
+                    this.texture.needsUpdate = true
+                    this.material.uniforms.uImageSizes.value.set(
+                        this.media.naturalWidth,
+                        this.media.naturalHeight
+                    )
+                }
             }
         }
     }
 
     createMaterial() {
+        const w = this._cachedSize?.w || 0
+        const h = this._cachedSize?.h || 0
+
         this.material = new THREE.ShaderMaterial({
             vertexShader: vertex,
             fragmentShader: fragment,
@@ -80,7 +91,7 @@ export default class Media {
             side: THREE.DoubleSide,
             uniforms: {
                 tMap: { value: this.texture },
-                uImageSizes: { value: new THREE.Vector2(0, 0) },
+                uImageSizes: { value: new THREE.Vector2(w, h) },
                 uPlaneSizes: { value: new THREE.Vector2(0, 0) },
                 uNormalizedY: { value: 0 },
             }

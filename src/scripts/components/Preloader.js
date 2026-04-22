@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import * as THREE from "three";
 
 import Component from "../classes/Component";
 import device from "../classes/DeviceDetection";
@@ -23,6 +24,10 @@ export default class Preloader extends Component {
 
         this.template = template
         this.cache = new Map()
+
+        window.TEXTURES = {}
+        this.textureLoader = new THREE.TextureLoader()
+        this.textureLoader.crossOrigin = 'anonymous'
 
         if (device.isTouch) {
             this.onTabletLoad()
@@ -154,14 +159,17 @@ export default class Preloader extends Component {
 
                     if (media.type === 'image') {
 
-                        const image = new Image();
+                        this.textureLoader.load(
+                            media.url,
+                            (texture) => {
+                                window.TEXTURES[media.url] = texture
+                                resolve()
+                            },
+                            undefined,
+                            resolve
+                        )
 
-                        image.onload = resolve;
-                        image.onerror = resolve;
-
-                        image.src = media.url;
-                    }
-                    else if (media.type === 'video') {
+                    } else if (media.type === 'video') {
                         const video = document.createElement('video')
 
                         video.onloadeddata = resolve

@@ -33,14 +33,20 @@ export default class About {
     createTexture() {
         this.image = this.backgroundImage.querySelector('img')
 
-        this.media = new Image()
-        this.media.crossOrigin = "anonymous"
-        this.media.src = this.image.src
+        const cached = window.TEXTURES?.[this.image.src]
 
-        this.texture = new THREE.Texture(this.media)
+        if (cached) {
+            this.texture = cached
+        } else {
+            this.media = new Image()
+            this.media.crossOrigin = "anonymous"
+            this.media.src = this.image.src
 
-        this.media.onload = () => {
-            this.texture.needsUpdate = true
+            this.texture = new THREE.Texture(this.media)
+
+            this.media.onload = () => {
+                this.texture.needsUpdate = true
+            }
         }
     }
 

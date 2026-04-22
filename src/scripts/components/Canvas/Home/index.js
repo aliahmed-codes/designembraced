@@ -116,7 +116,7 @@ export default class Home {
 
 
     onWheel({ pixelY }) {
-        this.scroll.target += pixelY
+        this.scroll.target += (pixelY * 1.6)
 
         if (this.isPreloaderActive) {
             // prevent scrolling back while preloader is still on screen

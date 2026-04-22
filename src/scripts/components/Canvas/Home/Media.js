@@ -40,22 +40,32 @@ export default class Media {
     createTexture() {
         this.image = this.element.querySelector('img')
 
-        this.media = new Image()
-        this.media.crossOrigin = "anonymous"
-        this.media.src = this.image.src
+        const cached = window.TEXTURES?.[this.image.src]
 
-        this.texture = new THREE.Texture(this.media)
+        if (cached) {
+            this.texture = cached
+        } else {
+            this.media = new Image()
+            this.media.crossOrigin = 'anonymous'
+            this.media.src = this.image.src
 
-        this.media.onload = () => {
-            this.texture.needsUpdate = true
-            this.material.uniforms.uImageSizes.value.set(
-                this.media.naturalWidth,
-                this.media.naturalHeight
-            )
+            this.texture = new THREE.Texture(this.media)
+
+            this.media.onload = () => {
+                this.texture.needsUpdate = true
+                this.material.uniforms.uImageSizes.value.set(
+                    this.media.naturalWidth,
+                    this.media.naturalHeight
+                )
+            }
         }
     }
 
     createMaterial() {
+        const img = this.texture?.image
+        const imgW = img?.naturalWidth || img?.width || 0
+        const imgH = img?.naturalHeight || img?.height || 0
+
         this.material = new THREE.ShaderMaterial({
             vertexShader: vertex,
             fragmentShader: fragment,
@@ -63,7 +73,7 @@ export default class Media {
             side: THREE.DoubleSide,
             uniforms: {
                 tMap: { value: this.texture },
-                uImageSizes: { value: new THREE.Vector2(0, 0) },
+                uImageSizes: { value: new THREE.Vector2(imgW, imgH) },
                 uPlaneSizes: { value: new THREE.Vector2(0, 0) },
                 uHover: { value: 0 },
                 uMouse: { value: new THREE.Vector2(0.5, 0.5) },
@@ -129,7 +139,8 @@ export default class Media {
         gsap.to(this.material.uniforms.uHover, {
             value: 1,
             duration: 0.5,
-            ease: 'power3.out'
+            ease: 'power3.out',
+            overwrite: true
         })
     }
 
@@ -151,7 +162,8 @@ export default class Media {
         gsap.to(this.material.uniforms.uHover, {
             value: 0,
             duration: 0.5,
-            ease: 'power3.out'
+            ease: 'power3.out',
+            overwrite: true
         })
     }
 
