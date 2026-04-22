@@ -6,24 +6,13 @@ import device from "../../../classes/DeviceDetection"
 import Media from "./Media"
 
 export default class Home {
-    constructor({ scene, sizes }) {
-
+    constructor({ scene, sizes, onPreloader }) {
         this.group = new THREE.Group()
         this.textureLoader = new THREE.TextureLoader()
         this.textureLoader.crossOrigin = 'anonymous'
 
         this.scene = scene
         this.sizes = sizes
-
-        this.galleryElements = document.querySelector('.case_gallery_wrapper')
-        this.mediasElements = document.querySelectorAll('.case_gallery_link_wrapper')
-
-
-        this.createGeometry()
-        this.createGalleries()
-
-
-        this.scene.add(this.group)
 
 
         this.scroll = {
@@ -33,9 +22,20 @@ export default class Home {
             lerp: 0.1
         }
 
+
+        this.galleryElements = document.querySelector('.case_gallery_wrapper')
+        this.mediasElements = document.querySelectorAll('.case_gallery_link_wrapper')
+
+        this.createGeometry()
+        this.createGalleries()
+
+        if (onPreloader && device.isTouch) this.createHomePreloader()
+
+        this.scene.add(this.group)
+
+
+
         this.transformPrefix = Prefix('transform')
-
-
     }
 
 
@@ -57,6 +57,31 @@ export default class Home {
         })
     }
 
+
+    createHomePreloader() {
+        this.homePreloader = document.querySelector('.home_preloader')
+
+        this.setInitPosition()
+
+        this.addEventListeners()
+    }
+
+    setInitPosition() {
+        if (!this.medias || !this.medias.length) return
+
+        const lastMedia = this.medias[this.medias.length - 1]
+        const scrollY = lastMedia.bounds.top + lastMedia.bounds.height / 2 - window.innerHeight / 2
+
+        this.scroll.current = this.scroll.last = this.scroll.target = scrollY
+        this.preloaderInitScroll = scrollY
+        this.isPreloaderActive = true
+    }
+
+
+
+    /**
+     * Events.
+     */
 
 
     onResize(event) {
@@ -80,14 +105,24 @@ export default class Home {
 
         map(this.medias, media => media.onResize(event))
 
-        // Restore scroll so any in-progress enter animation continues
-        this.scroll.current = this.scroll.last = savedScroll
+        if (this.isPreloaderActive) {
+            // Recalculate init position with fresh bounds from media.onResize
+            this.setInitPosition()
+        } else {
+            this.scroll.current = this.scroll.last = savedScroll
+        }
     }
 
 
 
     onWheel({ pixelY }) {
         this.scroll.target += pixelY
+
+        if (this.isPreloaderActive) {
+            // prevent scrolling back while preloader is still on screen
+            this.scroll.target = Math.max(this.preloaderInitScroll, this.scroll.target)
+            return
+        }
 
         clearTimeout(this.snapTimeout)
         this.snapTimeout = setTimeout(() => this.snapToNearest(), 200)
@@ -130,6 +165,17 @@ export default class Home {
             this.galleryElements.style[this.transformPrefix] = `translateY(${-this.scroll.current}px)`
         }
 
+        if (this.isPreloaderActive && this.homePreloader) {
+            const delta = this.scroll.current - this.preloaderInitScroll
+            this.homePreloader.style.transform = `translateY(${-delta}px)`
+
+            if (delta >= window.innerHeight) {
+                this.homePreloader.style.display = 'none'
+                this.isPreloaderActive = false
+                this.snapToNearest()
+            }
+        }
+
         if (this.medias && this.gallerySizes) {
             const direction = this.scroll.current > this.scroll.last ? 'up' : 'down'
 
@@ -165,11 +211,6 @@ export default class Home {
         }
 
         this.scroll.last = this.scroll.current
-    }
-
-    enterFromBelow() {
-        this.scroll.current = this.scroll.last = -window.innerHeight * 0.85
-        this.scroll.target = 0
     }
 
     destroy() {

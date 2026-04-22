@@ -76,7 +76,7 @@ class App {
     onPreloader() {
         this.onResize()
 
-        this.canvas.onPreloaded()
+        this.canvas.onPreloaded({ onPreloader: true })
 
         this.page.show({ onPreloader: true, timeline: null })
     }

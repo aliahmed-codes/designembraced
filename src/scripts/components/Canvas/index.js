@@ -52,16 +52,17 @@ export default class Canvas {
      * Home.
      */
 
-    createHome() {
+    createHome(onPreloader) {
         this.home = new Home({
             scene: this.scene,
-            sizes: this.sizes
+            sizes: this.sizes,
+            onPreloader
         })
 
         this.home.onResize({ sizes: this.sizes })
 
         if (device.isTouch) {
-            this.home.enterFromBelow()
+            // this.home.enterFromBelow()
         }
     }
 
@@ -116,19 +117,19 @@ export default class Canvas {
      * Events.
      */
 
-    onPreloaded() {
-        this.onChangeEnd(this.template)
+    onPreloaded({ onPreloader }) {
+        this.onChangeEnd(this.template, onPreloader)
     }
 
     onChangeStart() {
     }
 
 
-    onChangeEnd(template) {
+    onChangeEnd(template, onPreloader) {
         this.template = template
 
         if (this.template == 'home') {
-            this.createHome()
+            this.createHome(onPreloader)
             this.addEventListeners()
         } else if (this.home) {
             this.destroyHome()

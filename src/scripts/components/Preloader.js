@@ -22,9 +22,10 @@ export default class Preloader extends Component {
         })
 
         this.template = template
+        this.cache = new Map()
 
         if (device.isTouch) {
-            this.destroy()
+            this.onTabletLoad()
             return
         }
 
@@ -40,6 +41,11 @@ export default class Preloader extends Component {
 
     }
 
+
+    onTabletLoad() {
+        this.destroy({ async: false })
+        setTimeout(() => this.emit('completed'), 0)
+    }
 
     init() {
         this.elements.navigation.classList.add('preloading')
@@ -75,7 +81,6 @@ export default class Preloader extends Component {
     }
 
     createCache() {
-        this.cache = new Map()
 
         for (let i = 0; i < sessionStorage.length; i++) {
             const key = sessionStorage.key(i)
@@ -253,10 +258,14 @@ export default class Preloader extends Component {
         })
     }
 
-    destroy() {
-        return new Promise((resolve) => {
+    destroy({ async = true } = {}) {
+        if (async) {
+            return new Promise((resolve) => {
+                this.element.parentNode.removeChild(this.element)
+                resolve()
+            })
+        } else {
             this.element.parentNode.removeChild(this.element)
-            resolve()
-        })
+        }
     }
 }
