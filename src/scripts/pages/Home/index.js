@@ -1,12 +1,8 @@
 import gsap from "gsap";
-import device from "../../classes/DeviceDetection";
 import Page from "../../classes/Page";
-import Title from "../../classes/Title";
-import Paragraph from "../../classes/Paragraph";
-import { splitByLines } from "../../utils/text";
 
 export default class Home extends Page {
-    constructor({ canvas }) {
+    constructor() {
 
         super({
             id: "home",
@@ -16,11 +12,8 @@ export default class Home extends Page {
             }
         })
 
-        this.canvas = canvas
 
     }
-
-
 
 
     show({ onPreloader = false } = {}) {
@@ -43,4 +36,5 @@ export default class Home extends Page {
     hind() {
 
     }
+
 }
