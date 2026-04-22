@@ -54,6 +54,28 @@ export default class Case {
         map(this.medias, media => media.createBounds({ sizes: this.sizes }))
     }
 
+
+    /**
+         * Animations.
+         */
+
+    show() {
+
+        console.log('canvas case show');
+
+        map(this.medias, (media) => media.show());
+    }
+
+    hide() {
+        console.log('canvas case show');
+
+        map(this.medias, (media) => media.hide());
+    }
+
+    /**
+     * Events.
+     */
+
     onResize(event) {
         this.sizes = event.sizes
         map(this.medias, media => media.onResize(event))

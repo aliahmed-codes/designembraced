@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import gsap from "gsap"
 import { map } from "lodash"
 import Prefix from 'prefix'
 import device from "../../../classes/DeviceDetection"
@@ -80,6 +81,21 @@ export default class Home {
 
 
     /**
+     * Animations.
+     */
+
+    show() {
+
+        map(this.medias, (media) => media.show());
+    }
+
+    hide() {
+        console.log('canvas home hide');
+
+        map(this.medias, (media) => media.hide());
+    }
+
+    /**
      * Events.
      */
 
@@ -150,6 +166,38 @@ export default class Home {
         this.scroll.target = snapTarget
     }
 
+    animateToCase(mediaIndex, targetBounds, sizes, onComplete) {
+        const media = this.medias[mediaIndex]
+
+        if (!media || !targetBounds) {
+            onComplete?.()
+            return
+        }
+
+        media.isTransitioning = true
+
+        // Convert viewport-space bounds to WebGL world-space position and scale
+        const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
+        const targetScaleY = (targetBounds.height / window.innerHeight) * sizes.height
+        const targetX = (-sizes.width / 2) + (targetScaleX / 2) + (targetBounds.left / window.innerWidth) * sizes.width
+        const targetY = (sizes.height / 2) - (targetScaleY / 2) - (targetBounds.top / window.innerHeight) * sizes.height
+
+        gsap.to(media.mesh.scale, {
+            x: targetScaleX,
+            y: targetScaleY,
+            duration: 1,
+            ease: 'power3.inOut'
+        })
+
+        gsap.to(media.mesh.position, {
+            x: targetX,
+            y: targetY,
+            duration: 1,
+            ease: 'power3.inOut',
+            onComplete
+        })
+    }
+
     addEventListeners() {
         map(this.medias, media => media.addEventListeners())
     }
@@ -180,6 +228,8 @@ export default class Home {
             const direction = this.scroll.current > this.scroll.last ? 'up' : 'down'
 
             map(this.medias, media => {
+                if (media.isTransitioning) return
+
                 const scaleY = media.mesh.scale.y / 2 + 0.25
 
                 if (direction === 'up') {

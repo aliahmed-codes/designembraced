@@ -1,3 +1,4 @@
+import gsap from "gsap"
 import { bind, each } from "lodash"
 import About from "./pages/About"
 import Case from "./pages/Case"
@@ -78,7 +79,7 @@ class App {
 
         this.canvas.onPreloaded({ onPreloader: true })
 
-        this.page.show({ onPreloader: true, timeline: null })
+        this.page.show({ onPreloader: true })
     }
 
     async fetchPage(url) {
@@ -97,7 +98,7 @@ class App {
     }
 
 
-    async onChange({ url }) {
+    async onChange({ url, transition = null }) {
 
         this.canvas.onChangeStart(this.template)
 
@@ -125,7 +126,12 @@ class App {
 
             this.content.innerHTML = divContent.innerHTML
 
-            this.canvas.onChangeEnd(this.template)
+            // Apply FLIP offsets before the page renders so there's no layout flash
+            if (transition && this.template === 'case') {
+                this.applyCaseTransitionOffsets(transition)
+            }
+
+            this.canvas.onChangeEnd(this.template, null, transition)
 
             this.page = this.pages[this.template]
 
@@ -135,13 +141,33 @@ class App {
                 this.onResize()
             }, 1000)
 
-            await this.page.show()
+            await this.page.show({ transition })
 
             this.createNavigation()
 
             this.addLinkListeners()
 
+        }
+    }
 
+    applyCaseTransitionOffsets(transition) {
+        const headingEl = document.querySelector('.case_count_heading')
+        const nameEl = document.querySelector('.case_name')
+
+        if (headingEl && transition.fromHeadingBounds) {
+            const to = headingEl.getBoundingClientRect()
+            gsap.set(headingEl, {
+                x: transition.fromHeadingBounds.left - to.left,
+                y: transition.fromHeadingBounds.top - to.top,
+            })
+        }
+
+        if (nameEl && transition.fromNameBounds) {
+            const to = nameEl.getBoundingClientRect()
+            gsap.set(nameEl, {
+                x: transition.fromNameBounds.left - to.left,
+                y: transition.fromNameBounds.top - to.top,
+            })
         }
     }
 
@@ -234,7 +260,26 @@ class App {
 
                 if (href === window.location.href) return
 
-                this.onChange({ url: href })
+                let transition = null
+
+                if (this.template === 'home') {
+                    const wrapper = link.closest('.case_gallery_link_wrapper')
+
+                    if (wrapper) {
+                        const allWrappers = [...document.querySelectorAll('.case_gallery_link_wrapper')]
+                        const mediaIndex = allWrappers.indexOf(wrapper)
+                        const headingEl = wrapper.querySelector('.case_gallery_count_heading')
+                        const nameEl = wrapper.querySelector('.case_gallery_name')
+
+                        transition = {
+                            mediaIndex,
+                            fromHeadingBounds: headingEl ? headingEl.getBoundingClientRect() : null,
+                            fromNameBounds: nameEl ? nameEl.getBoundingClientRect() : null,
+                        }
+                    }
+                }
+
+                this.onChange({ url: href, transition })
             })
         })
     }

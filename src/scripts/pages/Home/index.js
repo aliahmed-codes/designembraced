@@ -33,8 +33,11 @@ export default class Home extends Page {
         }
     }
 
-    hind() {
+    async hide() {
+        
+        console.log('dom home hide', this.elements.firstCaseHeading);
 
     }
+
 
 }

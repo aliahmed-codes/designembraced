@@ -18,6 +18,7 @@ export default class Preloader extends Component {
                 footer: document.querySelector(".footer"),
 
                 firstCaseHeading: document.querySelector('.case_1 .case_gallery_count_heading'),
+                caseHeading: document.querySelector('.case_count_heading'),
 
             }
         })
@@ -61,9 +62,22 @@ export default class Preloader extends Component {
         this.elements.totalCont.textContent = `/${String(this.state.totalProjects).padStart(2, '0')}`
 
         if (this.template === "home") this.createHomeHeading()
+        else if (this.template === "case") this.createCaseHeading()
     }
 
 
+
+    createCaseHeading() {
+        if (!this.elements.caseHeading || !this.elements.preloaderText) return
+
+        const from = this.elements.preloaderText.getBoundingClientRect()
+        const to = this.elements.caseHeading.getBoundingClientRect()
+
+        gsap.set(this.elements.caseHeading, {
+            x: from.left - to.left + 10,
+            y: from.top - to.top,
+        })
+    }
 
     createHomeHeading() {
 
@@ -245,6 +259,9 @@ export default class Preloader extends Component {
     onLoaded() {
 
         if (this.template === "home")
+            this.elements.currentCont.textContent = `PR.${String(1).padStart(2, '0')}`
+
+        if (this.template === "case")
             this.elements.currentCont.textContent = `PR.${String(1).padStart(2, '0')}`
 
         this.animateOut = gsap.timeline({

@@ -114,41 +114,89 @@ export default class Canvas {
 
 
     /**
+     * Animations.
+     */
+    show() {
+        if (this.home) this.home.show()
+
+        if (this.about) this.about.show()
+
+        if (this.case) this.case.show()
+    }
+
+    hide() {
+        if (this.home) this.home.hide()
+
+        if (this.about) this.about.hide()
+
+        if (this.case) this.case.hide()
+    }
+
+
+    /**
      * Events.
      */
 
-    onPreloaded({ onPreloader }) {
+    onPreloaded({ onPreloader } = {}) {
         this.onChangeEnd(this.template, onPreloader)
     }
 
     onChangeStart() {
+        this.hide()
     }
 
 
-    onChangeEnd(template, onPreloader) {
+    onChangeEnd(template, onPreloader, transition) {
         this.template = template
 
-        if (this.template == 'home') {
+        const isHomeToCaseTransition = template === 'case' && transition && this.home
+
+        if (template === 'home') {
             this.createHome(onPreloader)
             this.addEventListeners()
-        } else if (this.home) {
+        } else if (this.home && !isHomeToCaseTransition) {
             this.destroyHome()
         }
 
         if (!device.isTouch) {
-            if (this.template == 'case') {
+            if (template === 'case') {
                 this.destroyCase()
                 this.createCase()
+
+                if (isHomeToCaseTransition) {
+                    // Hide case banner — home media plane animates to its position first
+                    if (this.case?.medias?.[0]) {
+                        this.case.medias[0].mesh.visible = false
+                    }
+
+                    const caseBanner = document.querySelector('#case_banner_media img')
+                    const bannerBounds = caseBanner ? caseBanner.getBoundingClientRect() : null
+
+                    this.home.animateToCase(
+                        transition.mediaIndex,
+                        bannerBounds,
+                        this.sizes,
+                        () => {
+                            this.destroyHome()
+                            if (this.case?.medias?.[0]) {
+                                this.case.medias[0].mesh.visible = true
+                            }
+                        }
+                    )
+                }
             } else if (this.case) {
                 this.destroyCase()
             }
 
-            if (this.template == 'about') {
+            
+            if (template === 'about') {
                 this.createAbout()
             } else if (this.about) {
                 this.destroyAbout()
             }
         }
+
+        this.show()
     }
 
     onResize() {

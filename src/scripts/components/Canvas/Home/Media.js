@@ -102,6 +102,22 @@ export default class Media {
     }
 
 
+    /**
+    * Animations.
+    */
+    show() {
+
+    }
+
+    hide() {
+
+    }
+
+
+    /**
+     * Updates.
+     */
+
     updateScale() {
         this.width = this.bounds.width / window.innerWidth
         this.height = this.bounds.height / window.innerHeight
@@ -126,6 +142,12 @@ export default class Media {
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height) + this.extra.y
     }
 
+
+
+
+    /**
+     * Events.
+     */
 
 
     onResize(sizes) {

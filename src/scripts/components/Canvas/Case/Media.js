@@ -111,6 +111,22 @@ export default class Media {
         this.updateY()
     }
 
+
+    /**
+    * Animations.
+    */
+
+    show() {
+    }
+
+    hide() {
+    }
+
+
+    /**
+     * Events.
+     */
+
     updateScale() {
         this.width = this.bounds.width / window.innerWidth
         this.height = this.bounds.height / window.innerHeight

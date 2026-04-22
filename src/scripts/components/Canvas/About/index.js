@@ -78,6 +78,20 @@ export default class About {
         this.updateY()
     }
 
+    /**
+    * Animations.
+    */
+
+    show() {
+    }
+
+    hide() {
+    }
+
+
+    /**
+     * Updates.
+     */
     updateScale() {
         this.width = this.bounds.width / window.innerWidth
         this.height = this.bounds.height / window.innerHeight
