@@ -5,7 +5,7 @@ block variables
 
 block content
     .home
-        .home_preloader
+        .home_preloader(style='background-color: ' + (colors && colors.backgroundColor) + '; color: ' + (colors && colors.textColor))
             h2.home_preloader_heading(data-animation="title")
                 span= about.heroText.topLine
                 br
