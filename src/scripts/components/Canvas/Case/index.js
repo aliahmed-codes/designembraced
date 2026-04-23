@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import gsap from "gsap"
 import { map } from "lodash"
 
 import Media from "./Media"
@@ -76,6 +77,43 @@ export default class Case {
      * Events.
      */
 
+    animateToBounds(mediaIndex, targetBounds, sizes, onComplete) {
+        const media = this.medias[mediaIndex]
+
+        if (!media || !targetBounds) {
+            onComplete?.()
+            return
+        }
+
+        media.isTransitioning = true
+
+        const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
+        const targetScaleY = (targetBounds.height / window.innerHeight) * sizes.height
+        const targetX = (-sizes.width / 2) + (targetScaleX / 2) + (targetBounds.left / window.innerWidth) * sizes.width
+        const targetY = (sizes.height / 2) - (targetScaleY / 2) - (targetBounds.top / window.innerHeight) * sizes.height
+
+        gsap.to(media.mesh.scale, {
+            x: targetScaleX,
+            y: targetScaleY,
+            duration: 1,
+            ease: 'power3.inOut',
+            onUpdate: () => {
+                media.material.uniforms.uPlaneSizes.value.set(
+                    media.mesh.scale.x,
+                    media.mesh.scale.y
+                )
+            }
+        })
+
+        gsap.to(media.mesh.position, {
+            x: targetX,
+            y: targetY,
+            duration: 1,
+            ease: 'power3.inOut',
+            onComplete
+        })
+    }
+
     onResize(event) {
         this.sizes = event.sizes
         map(this.medias, media => media.onResize(event))
@@ -83,7 +121,10 @@ export default class Case {
 
     update(scroll) {
         if (!scroll) return
-        map(this.medias, media => media.update(scroll.current))
+        map(this.medias, media => {
+            if (media.isTransitioning) return
+            media.update(scroll.current)
+        })
     }
 
     destroy() {

@@ -52,4 +52,8 @@ export default class Case extends Page {
             super.show()
         }
     }
+
+    async hide() {
+        // Visual transition is handled by WebGL — resolve immediately
+    }
 }

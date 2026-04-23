@@ -159,6 +159,37 @@ export default class Page {
         return speed
     }
 
+    onMouseDown(event) {
+        if (event.type === 'mousedown' && event.button !== 0) return
+
+        this.isDragging = true
+
+        const point = event.touches ? event.touches[0] : event
+
+        this.dragLastY = point.clientY
+    }
+
+    onMouseMove(event) {
+        if (!this.isDragging) return
+
+        if (event.type === 'mousemove' && event.buttons === 0) {
+            this.isDragging = false; return
+        }
+
+        const point = event.touches ? event.touches[0] : event
+        const deltaY = this.dragLastY - point.clientY
+
+        this.dragLastY = point.clientY
+
+        if (deltaY === 0) return
+
+        this.onWheel({ pixelY: deltaY * 2 })
+    }
+
+    onMouseUp() {
+        this.isDragging = false
+    }
+
 
 
     /**

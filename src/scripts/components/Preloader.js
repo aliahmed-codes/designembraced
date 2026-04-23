@@ -49,6 +49,13 @@ export default class Preloader extends Component {
 
 
     onTabletLoad() {
+        if (this.template !== 'home') {
+            const mobilePreloader = document.querySelector('.mobile_preloader')
+            if (mobilePreloader && mobilePreloader.parentNode) {
+                mobilePreloader.parentNode.removeChild(mobilePreloader)
+            }
+        }
+
         this.destroy({ async: false })
         setTimeout(() => this.emit('completed'), 0)
     }
@@ -261,8 +268,15 @@ export default class Preloader extends Component {
         if (this.template === "home")
             this.elements.currentCont.textContent = `PR.${String(1).padStart(2, '0')}`
 
-        if (this.template === "case")
-            this.elements.currentCont.textContent = `PR.${String(1).padStart(2, '0')}`
+        if (this.template === "case") {
+            const cases = window.PAGES?.cases || []
+            const caseIndex = cases.findIndex(url => {
+                try { return new URL(url, window.location.origin).pathname === window.location.pathname }
+                catch { return false }
+            })
+            const caseNumber = caseIndex !== -1 ? caseIndex + 1 : 1
+            this.elements.currentCont.textContent = `PR.${String(caseNumber).padStart(2, '0')}`
+        }
 
         this.animateOut = gsap.timeline({
             delay: 1
@@ -284,13 +298,16 @@ export default class Preloader extends Component {
     }
 
     destroy({ async = true } = {}) {
-        if (async) {
-            return new Promise((resolve) => {
+        const remove = () => {
+            if (this.element && this.element.parentNode) {
                 this.element.parentNode.removeChild(this.element)
-                resolve()
-            })
+            }
+        }
+
+        if (async) {
+            return new Promise(resolve => { remove(); resolve() })
         } else {
-            this.element.parentNode.removeChild(this.element)
+            remove()
         }
     }
 }

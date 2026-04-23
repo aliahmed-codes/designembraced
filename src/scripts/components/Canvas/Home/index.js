@@ -96,6 +96,14 @@ export default class Home {
     }
 
 
+    scrollToMedia(mediaIndex) {
+        if (!this.medias || mediaIndex >= this.medias.length) return
+        const media = this.medias[mediaIndex]
+        if (!media) return
+        const scrollY = media.bounds.top + media.bounds.height / 2 - window.innerHeight / 2
+        this.scroll.current = this.scroll.last = this.scroll.target = scrollY
+    }
+
     setInitPosition() {
         if (!this.medias || !this.medias.length) return
 
@@ -217,7 +225,13 @@ export default class Home {
             x: targetScaleX,
             y: targetScaleY,
             duration: 1,
-            ease: 'power3.inOut'
+            ease: 'power3.inOut',
+            onUpdate: () => {
+                media.material.uniforms.uPlaneSizes.value.set(
+                    media.mesh.scale.x,
+                    media.mesh.scale.y
+                )
+            }
         })
 
         gsap.to(media.mesh.position, {

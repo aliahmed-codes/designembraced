@@ -4,7 +4,6 @@ import About from "./pages/About"
 import Case from "./pages/Case"
 import Home from "./pages/Home"
 
-
 import Navigation from "./components/Navigation"
 import Preloader from "./components/Preloader"
 import normalizeWheel from "normalize-wheel"
@@ -129,6 +128,8 @@ class App {
             // Apply FLIP offsets before the page renders so there's no layout flash
             if (transition && this.template === 'case') {
                 this.applyCaseTransitionOffsets(transition)
+            } else if (transition && this.template === 'home') {
+                this.applyHomeTransitionOffsets(transition)
             }
 
             this.canvas.onChangeEnd(this.template, null, transition)
@@ -147,6 +148,31 @@ class App {
 
             this.addLinkListeners()
 
+        }
+    }
+
+    applyHomeTransitionOffsets(transition) {
+        const allWrappers = document.querySelectorAll('.case_gallery_link_wrapper')
+        const wrapper = allWrappers[transition.mediaIndex]
+        if (!wrapper) return
+
+        const galleryHeading = wrapper.querySelector('.case_gallery_count_heading')
+        const galleryName = wrapper.querySelector('.case_gallery_name')
+
+        if (galleryHeading && transition.fromHeadingBounds) {
+            const to = galleryHeading.getBoundingClientRect()
+            gsap.set(galleryHeading, {
+                x: transition.fromHeadingBounds.left - to.left,
+                y: transition.fromHeadingBounds.top - to.top,
+            })
+        }
+
+        if (galleryName && transition.fromNameBounds) {
+            const to = galleryName.getBoundingClientRect()
+            gsap.set(galleryName, {
+                x: transition.fromNameBounds.left - to.left,
+                y: transition.fromNameBounds.top - to.top,
+            })
         }
     }
 
@@ -174,7 +200,13 @@ class App {
 
     onResize() {
 
+        const wasTouch = device.isTouch
         device.update()
+
+        if (wasTouch !== device.isTouch) {
+            window.location.reload()
+            return
+        }
 
         if (this.page && this.page.onResize) (
             this.page.onResize()
@@ -188,9 +220,14 @@ class App {
         })
     }
 
+
     onMouseDown(event) {
-        if (this.canvas && this.canvas.onTouchDown) {
-            this.canvas.onTouchDown(event)
+        if (this.canvas && this.canvas.onMouseDown) {
+            this.canvas.onMouseDown(event)
+        }
+
+        if (this.page && this.page.onMouseDown) {
+            this.page.onMouseDown(event)
         }
     }
 
@@ -198,11 +235,19 @@ class App {
         if (this.canvas && this.canvas.onMouseMove) {
             this.canvas.onMouseMove(event)
         }
+
+        if (this.page && this.page.onMouseMove) {
+            this.page.onMouseMove(event)
+        }
     }
 
     onMouseUp(event) {
-        if (this.canvas && this.canvas.onTouchUp) {
-            this.canvas.onTouchUp(event)
+        if (this.canvas && this.canvas.onMouseUp) {
+            this.canvas.onMouseUp(event)
+        }
+
+        if (this.page && this.page.onMouseUp) {
+            this.page.onMouseUp(event)
         }
     }
 
@@ -255,9 +300,6 @@ class App {
 
 
         window.addEventListener('mousewheel', this.onWheel.bind(this))
-        window.addEventListener('mousemove', this.onMouseMove.bind(this))
-
-
         window.addEventListener('mousedown', this.onMouseDown.bind(this))
         window.addEventListener('mousemove', this.onMouseMove.bind(this))
         window.addEventListener('mouseup', this.onMouseUp.bind(this))
@@ -284,6 +326,11 @@ class App {
 
                 let transition = null
 
+                if (device.isTouch) {
+                    this.onChange({ url: href })
+                    return
+                }
+
                 if (this.template === 'home') {
                     const wrapper = link.closest('.case_gallery_link_wrapper')
 
@@ -293,10 +340,31 @@ class App {
                         const headingEl = wrapper.querySelector('.case_gallery_count_heading')
                         const nameEl = wrapper.querySelector('.case_gallery_name')
 
+                        this.lastMediaIndex = mediaIndex
+
                         transition = {
                             mediaIndex,
                             fromHeadingBounds: headingEl ? headingEl.getBoundingClientRect() : null,
                             fromNameBounds: nameEl ? nameEl.getBoundingClientRect() : null,
+                        }
+                    }
+                } else if (this.template === 'case') {
+                    const cases = window.PAGES?.cases || []
+                    const caseIndex = cases.findIndex(url => {
+                        try { return new URL(url, window.location.origin).pathname === window.location.pathname }
+                        catch { return false }
+                    })
+
+                    if (caseIndex !== -1) {
+                        const caseBannerEl = document.querySelector('#case_banner_media img')
+                        const caseHeadingEl = document.querySelector('.case_count_heading')
+                        const caseNameEl = document.querySelector('.case_name')
+
+                        transition = {
+                            mediaIndex: caseIndex,
+                            fromBannerBounds: caseBannerEl ? caseBannerEl.getBoundingClientRect() : null,
+                            fromHeadingBounds: caseHeadingEl ? caseHeadingEl.getBoundingClientRect() : null,
+                            fromNameBounds: caseNameEl ? caseNameEl.getBoundingClientRect() : null,
                         }
                     }
                 }
