@@ -2,9 +2,12 @@ import * as THREE from "three"
 import gsap from "gsap"
 import { map } from "lodash"
 import Prefix from 'prefix'
-import device from "../../../classes/DeviceDetection"
 
 import Media from "./Media"
+
+import device from "../../../classes/DeviceDetection"
+import Title from "../../../classes/Title"
+import { splitByLines } from "../../../utils/text"
 
 export default class Home {
     constructor({ scene, sizes, onPreloader }) {
@@ -60,18 +63,47 @@ export default class Home {
 
 
     createHomePreloader() {
-        this.homePreloader = document.querySelector('.home_preloader')
+        this.homePreloader = document.querySelector('.mobile_preloader')
+        this.preloaderAnimations = this.homePreloader.querySelectorAll('[data-animation="preloaderAnimation"]')
+
+        this.animationsIn()
 
         this.setInitPosition()
 
         this.addEventListeners()
     }
 
+
+    /**
+       * Animations.
+       */
+
+
+    animationsIn() {
+
+        this.animations = []
+
+        const toArray = el => !el ? [] : el instanceof NodeList ? Array.from(el) : Array.isArray(el) ? el : [el]
+
+        this.animationsEL = toArray(this.preloaderAnimations).map(element => {
+            splitByLines(element)
+
+            return new Title({ element })
+        })
+
+        this.animations.push(...this.animationsEL)
+
+    }
+
+
     setInitPosition() {
         if (!this.medias || !this.medias.length) return
 
         const lastMedia = this.medias[this.medias.length - 1]
         const scrollY = lastMedia.bounds.top + lastMedia.bounds.height / 2 - window.innerHeight / 2
+
+        this.medias[this.medias.length - 1].mesh.visible = false
+        this.mediasElements[this.mediasElements.length - 1].style.opacity = 0
 
         this.scroll.current = this.scroll.last = this.scroll.target = scrollY
         this.preloaderInitScroll = scrollY
@@ -135,7 +167,6 @@ export default class Home {
         this.scroll.target += (pixelY * 1.6)
 
         if (this.isPreloaderActive) {
-            // prevent scrolling back while preloader is still on screen
             this.scroll.target = Math.max(this.preloaderInitScroll, this.scroll.target)
             return
         }
@@ -215,10 +246,21 @@ export default class Home {
 
         if (this.isPreloaderActive && this.homePreloader) {
             const delta = this.scroll.current - this.preloaderInitScroll
-            this.homePreloader.style.transform = `translateY(${-delta}px)`
+
+            const progress = Math.max(0, Math.min(1, delta / window.innerHeight))
+            const yPercent = progress * 100
+
+            map(this.animations, animation => {
+                const spans = animation.element.querySelectorAll('span span')
+                gsap.set(spans, { y: `${-yPercent}%` })
+            })
+
 
             if (delta >= window.innerHeight) {
-                this.homePreloader.style.display = 'none'
+                this.medias[this.medias.length - 1].mesh.visible = true
+                this.mediasElements[this.mediasElements.length - 1].style.opacity = 1
+
+                this.homePreloader.remove()
                 this.isPreloaderActive = false
                 this.snapToNearest()
             }

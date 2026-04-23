@@ -188,10 +188,21 @@ class App {
         })
     }
 
+    onMouseDown(event) {
+        if (this.canvas && this.canvas.onTouchDown) {
+            this.canvas.onTouchDown(event)
+        }
+    }
 
     onMouseMove(event) {
         if (this.canvas && this.canvas.onMouseMove) {
             this.canvas.onMouseMove(event)
+        }
+    }
+
+    onMouseUp(event) {
+        if (this.canvas && this.canvas.onTouchUp) {
+            this.canvas.onTouchUp(event)
         }
     }
 
@@ -245,11 +256,22 @@ class App {
 
         window.addEventListener('mousewheel', this.onWheel.bind(this))
         window.addEventListener('mousemove', this.onMouseMove.bind(this))
+
+
+        window.addEventListener('mousedown', this.onMouseDown.bind(this))
+        window.addEventListener('mousemove', this.onMouseMove.bind(this))
+        window.addEventListener('mouseup', this.onMouseUp.bind(this))
+
+        window.addEventListener('touchstart', this.onMouseDown.bind(this))
+        window.addEventListener('touchmove', this.onMouseMove.bind(this))
+        window.addEventListener('touchend', this.onMouseUp.bind(this))
+
+
         window.addEventListener('resize', this.onResize.bind(this))
     }
 
     addLinkListeners() {
-        const links = document.querySelectorAll('a')
+        const links = document.querySelectorAll('a[data-type="link"]')
 
         each(links, link => {
 

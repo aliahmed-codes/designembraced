@@ -5,34 +5,12 @@ block variables
 
 block content
     .home
-        .home_preloader(style='background-color: ' + (colors && colors.backgroundColor) + '; color: ' + (colors && colors.textColor))
-            h2.home_preloader_heading(data-animation="title")
-                span= about.heroText.topLine
-                br
-                span.middle_line.line
-                span= about.heroText.middleLine
-                br
-                span= about.heroText.bottomLine
-                br
-                span= about.heroText.dateStamp
-            .home_preloader_content
-                .home_preloader_contact
-                    span(data-animation="paragraph")=navigation.availability
-                    a(href=`mailto:${navigation.contact.email}`)
-                        span(data-animation="paragraph")=navigation.contact.email
-                    a(href=`tel:${navigation.contact.phone}`)
-                        span(data-animation="paragraph")=navigation.contact.phone
-
-                .home_preloader_services
-                    each service in navigation.services
-                        span(data-animation="paragraph")= service
-
         .home_wrapper
             .case_gallery
                 .case_gallery_wrapper
                     each project, index in projects
                         .case_gallery_link_wrapper(class=`case_${project.caseIndex}`)
-                            a.case_gallery_link(href=Link(project.slug))
+                            a.case_gallery_link(href=Link(project.slug) data-type="link")
                                 figure.case_gallery_media
                                     img.case_gallery_media_image(src=imageUrl(project.mainBanner) )
                                     .case_gallery_count_wrapper

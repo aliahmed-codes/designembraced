@@ -11,7 +11,6 @@
   padding: 2.8rem;
   position: fixed;
   z-index: 2;
-  pointer-events: none;
 
   .preloader_wrapper {
     @extend %center;
@@ -47,6 +46,59 @@
       span {
         display: block;
       }
+    }
+  }
+}
+
+.mobile_preloader {
+  @extend %center;
+
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  padding: 4rem;
+  gap: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  color: currentColor;
+
+  @include media(">tablet") {
+    display: none;
+  }
+
+  .mobile_preloader_heading {
+    @extend %title-87;
+
+    text-align: end;
+    font-size: 6.5rem;
+
+    .line {
+      width: 7rem;
+      height: 1rem;
+      background: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .middle_line {
+      margin-right: 2%;
+    }
+  }
+
+  .mobile_preloader_content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3.5rem;
+
+    span {
+      @extend %text-11;
+
+      letter-spacing: -0.043431rem;
+      display: block;
     }
   }
 }

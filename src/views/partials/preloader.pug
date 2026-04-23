@@ -3,6 +3,30 @@
         figure.preloader_loading_media
             img.preloader_loading_media_image(src="../assets/media/loader.gif" alt="")
         .preloader_loading_line
-        h1.preloader_text
+        h1.preloader_text(data-animation="title")
             span.current_count PR.01
             span.total_count /#{String(projects.length).padStart(2, '0')}
+
+
+.mobile_preloader
+    h2.mobile_preloader_heading(data-animation="title")
+        span= about.heroText.topLine
+        br
+        span.middle_line.line
+        span= about.heroText.middleLine
+        br
+        span= about.heroText.bottomLine
+        br
+        span= about.heroText.dateStamp
+    .mobile_preloader_content
+        .mobile_preloader_contact
+            span(data-animation="title")=navigation.availability
+            a(href=`mailto:${navigation.contact.email}`)
+                span(data-animation="title")=navigation.contact.email
+            a(href=`tel:${navigation.contact.phone}`)
+                span(data-animation="title")=navigation.contact.phone
+
+        .mobile_preloader_services
+            each service in navigation.services
+                span(data-animation="title")= service
+
