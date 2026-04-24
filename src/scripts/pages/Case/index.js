@@ -154,18 +154,19 @@ export default class Case extends Page {
         // Color crossfade synced with scroll
         if (this._colorTl) this._colorTl.progress(this.nextScrollProgress)
 
-        // Per-frame FLIP — document positions are scroll-invariant so the delta is constant
+        // Per-frame FLIP: interpolate next heading toward hero heading's viewport position
+        const S = this.scroll.current
         const t = this.nextScrollProgress * this.nextScrollProgress * (3 - 2 * this.nextScrollProgress)
 
         if (this._nextHeading && this._nextHeadDocTop !== undefined && this._heroHeadDocTop !== undefined) {
             const dx = (this._heroHeadDocLeft - this._nextHeadDocLeft) * t
-            const dy = (this._heroHeadDocTop  - this._nextHeadDocTop)  * t
+            const dy = (this._heroHeadDocTop  - (this._nextHeadDocTop - S)) * t
             this._nextHeading.style.transform = `translate(${dx}px, ${dy}px)`
         }
 
         if (this._nextName && this._nextNameDocTop !== undefined && this._heroNameDocTop !== undefined) {
             const dx = (this._heroNameDocLeft - this._nextNameDocLeft) * t
-            const dy = (this._heroNameDocTop  - this._nextNameDocTop)  * t
+            const dy = (this._heroNameDocTop  - (this._nextNameDocTop - S)) * t
             this._nextName.style.transform = `translate(${dx}px, ${dy}px)`
         }
     }
