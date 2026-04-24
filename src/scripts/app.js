@@ -119,8 +119,12 @@ class App {
             this.backgroundColor = divContent.getAttribute('data-backgroundColor')
             this.textColor = divContent.getAttribute('data-color')
 
-            this.bodyContent.style.backgroundColor = this.backgroundColor
-            this.bodyContent.style.color = this.textColor
+            gsap.to(this.bodyContent, {
+                backgroundColor: this.backgroundColor,
+                color: this.textColor,
+                duration: 0.9,
+                ease: 'power2.inOut'
+            })
             this.content.setAttribute('data-template', this.template)
 
             this.content.innerHTML = divContent.innerHTML

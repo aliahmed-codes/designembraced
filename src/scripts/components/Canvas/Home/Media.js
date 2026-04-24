@@ -77,7 +77,10 @@ export default class Media {
                 uPlaneSizes: { value: new THREE.Vector2(0, 0) },
                 uHover: { value: 0 },
                 uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-                uNormalizedY: { value: 0 }
+                uNormalizedY: { value: 0 },
+                uBulge: { value: 0 },
+                uStrips: { value: 0 },
+                uFlipCurve: { value: 0 }
             }
         })
     }

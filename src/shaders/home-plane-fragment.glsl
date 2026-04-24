@@ -3,6 +3,7 @@ precision highp float;
 uniform sampler2D tMap;
 uniform vec2 uImageSizes;
 uniform vec2 uPlaneSizes;
+uniform float uStrips;
 
 varying vec2 vUv;
 
@@ -18,7 +19,15 @@ void main() {
     );
 
     if (!gl_FrontFacing) {
-        uv.x = 1.0 - uv.x;
+        uv.y = 1.0 - uv.y;
+    }
+
+    // Horizontal strips with per-strip randomised UV offset
+    if (uStrips > 0.001) {
+        float numStrips = 14.0;
+        float stripId   = floor(vUv.y * numStrips);
+        float rand      = fract(sin(stripId * 127.1 + 0.5) * 43758.5453);
+        uv.x = clamp(uv.x + (rand - 0.5) * uStrips * 0.22, 0.0, 1.0);
     }
 
     gl_FragColor = texture2D(tMap, uv);

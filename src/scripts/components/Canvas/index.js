@@ -187,7 +187,7 @@ export default class Canvas {
                 this.createCase()
 
                 if (isHomeToCaseTransition) {
-                    // Hide case banner — home media plane animates to its position first
+                    // Hide case banner while home media flips and scales to it
                     if (this.case?.medias?.[0]) {
                         this.case.medias[0].mesh.visible = false
                     }

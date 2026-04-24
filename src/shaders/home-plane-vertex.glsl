@@ -3,6 +3,8 @@ precision highp float;
 uniform float uHover;
 uniform vec2 uMouse;
 uniform float uNormalizedY;
+uniform float uBulge;
+uniform float uFlipCurve;
 
 varying vec2 vUv;
 
@@ -13,6 +15,10 @@ void main()
     vUv = uv;
 
     vec3 pos = position;
+
+    // Center bulge toward viewer, then relax
+    float bulgeR = length(uv - 0.5);
+    pos.z += smoothstep(0.72, 0.0, bulgeR) * uBulge * 0.65;
 
     float foldProgress = clamp(abs(uNormalizedY), 0.0, 1.0);
     float rollRadius   = 0.3;
@@ -48,6 +54,9 @@ void main()
             }
         }
     }
+
+    // Rounded flip: bow centre toward viewer so rotation feels like a physical card
+    pos.z += uFlipCurve * sin(uv.y * PI) * 0.35;
 
     // hover bulge
     float dist = distance(uv, uMouse);

@@ -94,6 +94,8 @@ export default class Media {
                 uImageSizes: { value: new THREE.Vector2(w, h) },
                 uPlaneSizes: { value: new THREE.Vector2(0, 0) },
                 uNormalizedY: { value: 0 },
+                uIdleTime: { value: 0 },
+                uFlipCurve: { value: 0 },
             }
         })
     }
@@ -151,7 +153,7 @@ export default class Media {
         this.createBounds({ sizes })
     }
 
-    update(scroll) {
+    update(scroll, time = 0) {
         this.updateY(-scroll)
 
         if (this.foldEnabled && !device.isTouch) {
@@ -160,5 +162,7 @@ export default class Media {
             const normalizedY = Math.max(-1, Math.min(1, d / window.innerHeight))
             this.material.uniforms.uNormalizedY.value = normalizedY
         }
+
+        this.material.uniforms.uIdleTime.value = time
     }
 }
