@@ -147,11 +147,9 @@ class App {
 
             this.content.innerHTML = divContent.innerHTML
 
-            // Apply FLIP offsets before the page renders so there's no layout flash
+            // Case transition offsets must be set before canvas setup (hero banner is measured there)
             if (transition && this.template === 'case') {
                 this.applyCaseTransitionOffsets(transition)
-            } else if (transition && this.template === 'home') {
-                this.applyHomeTransitionOffsets(transition)
             }
 
             this.canvas.onChangeEnd(this.template, null, transition)
@@ -159,6 +157,12 @@ class App {
             this.page = this.pages[this.template]
 
             this.page.create()
+
+            // Home offsets applied AFTER canvas.onChangeEnd so gallery is already scrolled
+            // to the correct case slot — getBoundingClientRect then returns correct positions
+            if (transition && this.template === 'home') {
+                this.applyHomeTransitionOffsets(transition)
+            }
 
             this._prefetchNextCase()
 

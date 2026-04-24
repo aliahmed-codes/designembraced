@@ -1,5 +1,6 @@
 import gsap from "gsap"
 import Page from "../../classes/Page"
+import device from "../../classes/DeviceDetection"
 
 export default class Case extends Page {
     constructor() {
@@ -140,7 +141,7 @@ export default class Case extends Page {
     update() {
         super.update()
 
-        if (!this.nextHref || this._transitionStartScroll === undefined) {
+        if (!this.nextHref || this._transitionStartScroll === undefined || device.isTouch) {
             this.nextScrollProgress = 0
             return
         }

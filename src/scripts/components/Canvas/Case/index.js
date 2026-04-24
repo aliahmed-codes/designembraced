@@ -95,25 +95,11 @@ export default class Case {
 
         const tl = gsap.timeline({ onComplete })
 
-        // Flip and scale back simultaneously: front face returns, image flies to gallery slot
-        tl.to(media.mesh.rotation, {
-            x: Math.PI,
-            duration: 0.5,
-            ease: 'power2.inOut'
-        }, 0)
-
-        // Rounded flip curve peaks at midpoint
-        tl.to(media.material.uniforms.uFlipCurve, {
-            value: 1, duration: 0.25, ease: 'power2.out'
-        }, 0)
-        tl.to(media.material.uniforms.uFlipCurve, {
-            value: 0, duration: 0.25, ease: 'power2.in'
-        }, 0.25)
-
+        // Scale back to the gallery slot size
         tl.to(media.mesh.scale, {
             x: targetScaleX,
             y: targetScaleY,
-            duration: 0.7,
+            duration: 0.8,
             ease: 'power3.inOut',
             onUpdate: () => {
                 media.material.uniforms.uPlaneSizes.value.set(
@@ -123,10 +109,11 @@ export default class Case {
             }
         }, 0)
 
+        // Fly back to gallery slot position
         tl.to(media.mesh.position, {
             x: targetX,
             y: targetY,
-            duration: 0.7,
+            duration: 0.8,
             ease: 'power3.inOut'
         }, 0)
     }

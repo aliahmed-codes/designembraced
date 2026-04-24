@@ -157,7 +157,7 @@ export default class Canvas {
             this.addEventListeners()
 
             if (isCaseToHomeTransition) {
-                // Scroll home gallery to center the case we came from
+                // Scroll home gallery to center the case we came from (applies DOM transform immediately)
                 this.home.scrollToMedia(transition.mediaIndex)
 
                 // Hide the specific gallery media — case banner plane animates to it
@@ -165,10 +165,17 @@ export default class Canvas {
                     this.home.medias[transition.mediaIndex].mesh.visible = false
                 }
 
-                const allWrappers = document.querySelectorAll('.case_gallery_link_wrapper')
-                const targetWrapper = allWrappers[transition.mediaIndex]
-                const targetImg = targetWrapper?.querySelector('img')
-                const targetBounds = targetImg ? targetImg.getBoundingClientRect() : null
+                // Compute viewport bounds from stored document coords + current scroll
+                // (gallery DOM is now scrolled so getBoundingClientRect would also work,
+                //  but using bounds directly avoids any reflow)
+                const media = this.home.medias[transition.mediaIndex]
+                const scrollY = this.home.scroll.current
+                const targetBounds = media ? {
+                    top: media.bounds.top - scrollY,
+                    left: media.bounds.left,
+                    width: media.bounds.width,
+                    height: media.bounds.height,
+                } : null
 
                 this.case.animateToBounds(0, targetBounds, this.sizes, () => {
                     this.destroyCase()
