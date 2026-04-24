@@ -14,7 +14,7 @@ void main()
 
     if(!gl_FrontFacing)
     {
-        uv.y = 1.0 - uv.y;
+        uv.x = 1.0 - uv.x;
     }
 
     gl_FragColor = texture2D(tMap, uv);

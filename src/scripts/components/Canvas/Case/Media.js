@@ -105,9 +105,17 @@ export default class Media {
         this.scene.add(this.mesh)
     }
 
-    createBounds({ sizes }) {
+    createBounds({ sizes, currentScroll = 0 }) {
         this.sizes = sizes
-        this.bounds = this.image.getBoundingClientRect()
+        const rect = this.image.getBoundingClientRect()
+        // Normalize to document coords — rect.top is viewport-relative and includes
+        // any translateY applied to the wrapper, so adding currentScroll undoes that.
+        this.bounds = {
+            top: rect.top + currentScroll,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+        }
         this.updateScale()
         this.updateX()
         this.updateY()
@@ -149,8 +157,8 @@ export default class Media {
         this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height)
     }
 
-    onResize({ sizes }) {
-        this.createBounds({ sizes })
+    onResize({ sizes, currentScroll = 0 }) {
+        this.createBounds({ sizes, currentScroll })
     }
 
     update(scroll, time = 0) {

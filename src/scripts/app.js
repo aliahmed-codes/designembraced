@@ -79,6 +79,23 @@ class App {
         this.canvas.onPreloaded({ onPreloader: true })
 
         this.page.show({ onPreloader: true })
+
+        this._prefetchNextCase()
+    }
+
+    // Pre-fetch the next case page so navigation is instant and colors are available
+    _prefetchNextCase() {
+        if (this.template !== 'case' || !this.page?.nextHref) return
+        const url = this.page.nextHref
+        this.fetchPage(url).then(html => {
+            if (!html || !this.page) return
+            const div = document.createElement('div')
+            div.innerHTML = html
+            const c = div.querySelector('.content')
+            const nextBg    = c?.getAttribute('data-backgroundColor') || null
+            const nextColor = c?.getAttribute('data-color') || null
+            this.page._initColorTransition(nextBg, nextColor)
+        })
     }
 
     async fetchPage(url) {
@@ -98,6 +115,7 @@ class App {
 
 
     async onChange({ url, transition = null }) {
+        this._navigatingToNext = false
 
         this.canvas.onChangeStart(this.template)
 
@@ -141,6 +159,8 @@ class App {
             this.page = this.pages[this.template]
 
             this.page.create()
+
+            this._prefetchNextCase()
 
             setTimeout(() => {
                 this.onResize()
@@ -280,6 +300,17 @@ class App {
         if (this.page) (
             this.page.update()
         )
+
+        // Bridge next-project scroll progress from Case page → Case canvas
+        const nextProgress = this.page?.nextScrollProgress
+        if (nextProgress !== undefined && this.canvas?.case) {
+            this.canvas.case.nextProgress = nextProgress
+
+            if (nextProgress >= 1 && this.page?.nextHref && !this._navigatingToNext) {
+                this._navigatingToNext = true
+                this.onChange({ url: this.page.nextHref, transition: { fromNextCaseScroll: true } })
+            }
+        }
 
         if (this.canvas && this.canvas.update) {
             this.canvas.update(this.page.scroll)

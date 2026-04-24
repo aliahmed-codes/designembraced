@@ -394,7 +394,6 @@
       width: 100%;
       position: relative;
       pointer-events: none;
-      display: block;
       z-index: 1;
 
       @include media("<=tablet") {

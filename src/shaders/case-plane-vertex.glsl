@@ -1,8 +1,6 @@
 precision highp float;
 
 uniform float uNormalizedY;
-uniform float uIdleTime;
-uniform float uFlipCurve;
 
 varying vec2 vUv;
 
@@ -40,15 +38,6 @@ void main() {
         pos.z += rollRadius * (1.0 - cos(phi));
       }
     }
-  }
-
-  // Rounded flip: bow centre toward viewer so rotation feels like a physical card
-  pos.z += uFlipCurve * sin(uv.y * PI) * 0.35;
-
-  // Subtle idle vertex animation in final state
-  if (uIdleTime > 0.0) {
-    pos.z += sin(pos.y * 3.2 + uIdleTime) * 0.007
-           + sin(pos.x * 2.1 + uIdleTime * 0.73) * 0.005;
   }
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
