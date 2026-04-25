@@ -146,8 +146,20 @@ export default class Page {
      * Events.
      */
     onResize() {
-        if (this.elements.wrapper) {
-            this.scroll.limit = this.elements.wrapper.clientHeight - window.innerHeight
+        if (!this.elements.wrapper) return
+        this.scroll.limit = Math.max(0, this.elements.wrapper.clientHeight - window.innerHeight)
+
+        // Images may still be loading when onResize fires — recalculate once they all settle
+        const imgs = Array.from(this.elements.wrapper.querySelectorAll('img'))
+        const pending = imgs.filter(img => !img.complete)
+        if (pending.length) {
+            Promise.all(pending.map(img =>
+                new Promise(r => { img.addEventListener('load', r, { once: true }); img.addEventListener('error', r, { once: true }) })
+            )).then(() => {
+                if (this.elements?.wrapper) {
+                    this.scroll.limit = Math.max(0, this.elements.wrapper.clientHeight - window.innerHeight)
+                }
+            })
         }
     }
 

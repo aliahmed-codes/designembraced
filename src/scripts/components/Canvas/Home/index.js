@@ -64,7 +64,7 @@ export default class Home {
 
     createHomePreloader() {
         this.homePreloader = document.querySelector('.mobile_preloader')
-        this.preloaderAnimations = this.homePreloader.querySelectorAll('[data-animation="preloaderAnimation"]')
+        this.preloaderAnimations = this.homePreloader.querySelectorAll('[data-animation="title"]')
 
         this.animationsIn()
 
