@@ -107,6 +107,11 @@ export default class Home {
         if (this.galleryElements) {
             this.galleryElements.style[this.transformPrefix] = `translateY(${-scrollY}px)`
         }
+        // Pre-position all medias at the new scroll so the wrapping check on the first
+        // update() frame uses correct mesh positions instead of stale scroll=0 coords.
+        // Without this, medias below the frustum at scroll=0 overshoot when wrapped and
+        // land above the frustum, staying invisible until the user scrolls.
+        map(this.medias, m => m.updateY(-scrollY))
     }
 
     setInitPosition() {

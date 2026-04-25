@@ -8,11 +8,11 @@ nav.navigation
                 p=navigation.logo.bottomText
 
         .navigation_content
-                span=navigation.availability
-                a(href=`mailto:${navigation.contact.email}`)
-                    span=navigation.contact.email
-                a(href=`tel:${navigation.contact.phone}`)
-                    span=navigation.contact.phone
+            span=navigation.availability
+            a(href=`mailto:${navigation.contact.email}`)
+                span=navigation.contact.email
+            a(href=`tel:${navigation.contact.phone}`)
+                span=navigation.contact.phone
 
         .navigation_services
             .navigation_services_wrapper     
@@ -28,11 +28,11 @@ nav.navigation
                             span= social.label
 
         .navigation_menu     
-            a(href=navigation.menuLinks.workLabel class=(page === 'home' ? 'active' : ''))
+            a(href=navigation.menuLinks.workLabel data-type="link" class=(page === 'home' ? 'active' : ''))
                 svg(xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewbox='0 0 9 7' fill='none' )
                     path(d='M8.69387 3.69631C8.87294 3.51724 8.87294 3.2269 8.69387 3.04783L5.77572 0.129688C5.59665 -0.0493837 5.30632 -0.0493837 5.12725 0.129688C4.94817 0.30876 4.94817 0.599093 5.12725 0.778165L7.72115 3.37207L5.12725 5.96598C4.94817 6.14505 4.94817 6.43538 5.12725 6.61445C5.30632 6.79353 5.59665 6.79353 5.77572 6.61445L8.69387 3.69631ZM0.3396 3.83061L8.36963 3.83061L8.36963 2.91353L0.3396 2.91353L0.3396 3.83061Z' fill='currentColor')
                 span WRK
-            a(href=navigation.menuLinks.aboutLabel class=(page === 'about' ? 'active' : ''))
+            a(href=navigation.menuLinks.aboutLabel data-type="link" class=(page === 'about' ? 'active' : ''))
                 svg(xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewbox='0 0 9 7' fill='none' )
                     path(d='M8.69387 3.69631C8.87294 3.51724 8.87294 3.2269 8.69387 3.04783L5.77572 0.129688C5.59665 -0.0493837 5.30632 -0.0493837 5.12725 0.129688C4.94817 0.30876 4.94817 0.599093 5.12725 0.778165L7.72115 3.37207L5.12725 5.96598C4.94817 6.14505 4.94817 6.43538 5.12725 6.61445C5.30632 6.79353 5.59665 6.79353 5.77572 6.61445L8.69387 3.69631ZM0.3396 3.83061L8.36963 3.83061L8.36963 2.91353L0.3396 2.91353L0.3396 3.83061Z' fill='currentColor')
                 span ABT
