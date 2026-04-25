@@ -1,6 +1,7 @@
 import gsap from "gsap"
 import Page from "../../classes/Page"
 import device from "../../classes/DeviceDetection"
+import { splitByLines } from "../../utils/text"
 
 export default class Case extends Page {
     constructor() {
@@ -21,28 +22,24 @@ export default class Case extends Page {
         const nextLink = document.querySelector('#case_next_banner_media .case_banner_media_link')
         this.nextHref = nextLink?.href || null
         this.nextScrollProgress = 0
-        this._colorTl  = null
+        this._colorTl = null
 
         this._nextHeading = document.querySelector('.next_case_wrapper .case_count_heading')
         this._nextName    = document.querySelector('.next_case_wrapper .case_name')
-        this._heroHeading = document.querySelector('.case_hero_wrapper .case_count_heading')
-        this._heroName    = document.querySelector('.case_hero_wrapper .case_name')
-
-        // Document positions stored at layout time (set in _storeDocPositions)
-        this._nextHeadDocTop  = undefined
-        this._nextHeadDocLeft = undefined
-        this._nextNameDocTop  = undefined
-        this._nextNameDocLeft = undefined
-        this._heroHeadDocTop  = undefined
-        this._heroHeadDocLeft = undefined
-        this._heroNameDocTop  = undefined
-        this._heroNameDocLeft = undefined
 
         this._transitionStartScroll = undefined
         this._transitionZone = undefined
 
+        // Prepare next-case heading/name for scroll-driven reveal (y: -100% → 0).
+        // splitByLines wraps content in overflow:hidden outer + animatable inner spans.
+        // We skip data-animation processing for these elements to avoid double-splitting.
+        this._nextHeadSpans = this._nextHeading ? splitByLines(this._nextHeading) : []
+        this._nextNameSpans = this._nextName    ? splitByLines(this._nextName)    : []
+
+        if (this._nextHeadSpans.length) gsap.set(this._nextHeadSpans, { y: '-100%' })
+        if (this._nextNameSpans.length) gsap.set(this._nextNameSpans, { y: '-100%' })
+
         this._calcTransitionStart()
-        this._storeDocPositions()
     }
 
     _calcTransitionStart() {
@@ -57,36 +54,6 @@ export default class Case extends Page {
         if (wrapper && prev !== null) wrapper.style.transform = prev
         // Start transition once the bottom of the next banner reaches the viewport bottom
         this._transitionStartScroll = Math.max(0, rect.bottom - window.innerHeight)
-    }
-
-    _storeDocPositions() {
-        // Temporarily remove the scroll transform so getBoundingClientRect = document position
-        const wrapper = this.elements.wrapper
-        const prev = wrapper ? wrapper.style.transform : null
-        if (wrapper) wrapper.style.transform = ''
-
-        if (this._nextHeading) {
-            const r = this._nextHeading.getBoundingClientRect()
-            this._nextHeadDocTop  = r.top
-            this._nextHeadDocLeft = r.left
-        }
-        if (this._nextName) {
-            const r = this._nextName.getBoundingClientRect()
-            this._nextNameDocTop  = r.top
-            this._nextNameDocLeft = r.left
-        }
-        if (this._heroHeading) {
-            const r = this._heroHeading.getBoundingClientRect()
-            this._heroHeadDocTop  = r.top
-            this._heroHeadDocLeft = r.left
-        }
-        if (this._heroName) {
-            const r = this._heroName.getBoundingClientRect()
-            this._heroNameDocTop  = r.top
-            this._heroNameDocLeft = r.left
-        }
-
-        if (wrapper && prev !== null) wrapper.style.transform = prev
     }
 
     // Called by app.js once the next page HTML has been pre-fetched
@@ -110,7 +77,6 @@ export default class Case extends Page {
             }
             super.show({ titles: false, page: false })
         } else if (transition?.fromNextCaseScroll) {
-            // Coming from scroll-driven next-case transition — no heading animation
             super.show({ titles: false })
         } else if (transition) {
             if (this.elements.caseHeading) {
@@ -121,7 +87,7 @@ export default class Case extends Page {
             }
             super.show({ titles: false })
         } else {
-            super.show()
+            super.show({ titles: false })
         }
     }
 
@@ -133,9 +99,6 @@ export default class Case extends Page {
         if (this._transitionStartScroll !== undefined && this.scroll?.limit) {
             this._transitionZone = Math.max(1, this.scroll.limit - this._transitionStartScroll)
         }
-
-        // Refresh document-position snapshots for per-frame FLIP computation
-        this._storeDocPositions()
     }
 
     update() {
@@ -155,21 +118,12 @@ export default class Case extends Page {
         // Color crossfade synced with scroll
         if (this._colorTl) this._colorTl.progress(this.nextScrollProgress)
 
-        // Per-frame FLIP: interpolate next heading toward hero heading's viewport position
-        const S = this.scroll.current
+        // Scroll-driven reveal: inner spans slide from y=-100% to y=0 (smoothstep)
         const t = this.nextScrollProgress * this.nextScrollProgress * (3 - 2 * this.nextScrollProgress)
+        const yPercent = -100 + 100 * t
 
-        if (this._nextHeading && this._nextHeadDocTop !== undefined && this._heroHeadDocTop !== undefined) {
-            const dx = (this._heroHeadDocLeft - this._nextHeadDocLeft) * t
-            const dy = (this._heroHeadDocTop  - (this._nextHeadDocTop - S)) * t
-            this._nextHeading.style.transform = `translate(${dx}px, ${dy}px)`
-        }
-
-        if (this._nextName && this._nextNameDocTop !== undefined && this._heroNameDocTop !== undefined) {
-            const dx = (this._heroNameDocLeft - this._nextNameDocLeft) * t
-            const dy = (this._heroNameDocTop  - (this._nextNameDocTop - S)) * t
-            this._nextName.style.transform = `translate(${dx}px, ${dy}px)`
-        }
+        if (this._nextHeadSpans.length) gsap.set(this._nextHeadSpans, { y: `${yPercent}%` })
+        if (this._nextNameSpans.length) gsap.set(this._nextNameSpans, { y: `${yPercent}%` })
     }
 
     async hide() {

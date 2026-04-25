@@ -255,7 +255,8 @@
 
   .next_case_heading {
     text-align: center;
-    margin-bottom: 13.3rem;
+    // margin-bottom: 13.3rem;
+    margin-bottom: 0;
 
     @include media("<=tablet") {
       margin-top: 8.5rem;
@@ -306,7 +307,7 @@
       height: 100%;
       width: 100%;
       padding-inline: $border-gap;
-      display: block;
+      display: flex;
 
       @include media("<=tablet") {
         padding-inline: 0;
@@ -319,7 +320,7 @@
       .case_banner_media {
         grid-column: 1/-1;
 
-        width: 50%;
+        width: 25%;
         aspect-ratio: 1/1;
         margin: auto;
 
