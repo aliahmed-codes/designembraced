@@ -24,17 +24,14 @@ export default class Case extends Page {
         this.nextScrollProgress = 0
         this._colorTl = null
 
-        this._nextHeading = document.querySelector('.next_case_wrapper .case_count_heading')
-        this._nextName    = document.querySelector('.next_case_wrapper .case_name')
+        this._nextHeadingEl = document.querySelector('.next_case_wrapper .case_count_heading')
+        this._nextNameEl = document.querySelector('.next_case_wrapper .case_name')
 
         this._transitionStartScroll = undefined
         this._transitionZone = undefined
 
-        // Prepare next-case heading/name for scroll-driven reveal (y: -100% → 0).
-        // splitByLines wraps content in overflow:hidden outer + animatable inner spans.
-        // We skip data-animation processing for these elements to avoid double-splitting.
-        this._nextHeadSpans = this._nextHeading ? splitByLines(this._nextHeading) : []
-        this._nextNameSpans = this._nextName    ? splitByLines(this._nextName)    : []
+        this._nextHeadSpans = this._nextHeadingEl ? splitByLines(this._nextHeadingEl) : []
+        this._nextNameSpans = this._nextNameEl ? splitByLines(this._nextNameEl) : []
 
         if (this._nextHeadSpans.length) gsap.set(this._nextHeadSpans, { y: '-100%' })
         if (this._nextNameSpans.length) gsap.set(this._nextNameSpans, { y: '-100%' })
@@ -60,12 +57,12 @@ export default class Case extends Page {
     _initColorTransition(nextBg, nextColor) {
         if (!nextBg) return
         const body = document.querySelector('body')
-        const fromBg    = getComputedStyle(body).backgroundColor
+        const fromBg = getComputedStyle(body).backgroundColor
         const fromColor = getComputedStyle(body).color
         this._colorTl = gsap.timeline({ paused: true })
             .fromTo(body,
-                { backgroundColor: fromBg,    color: fromColor },
-                { backgroundColor: nextBg,     color: nextColor, ease: 'none', duration: 1 },
+                { backgroundColor: fromBg, color: fromColor },
+                { backgroundColor: nextBg, color: nextColor, ease: 'none', duration: 1 },
                 0
             )
     }

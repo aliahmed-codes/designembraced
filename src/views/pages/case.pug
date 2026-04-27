@@ -74,7 +74,8 @@ block content
 
                 .next_case_wrapper
                     .case_count_wrapper
-                        h1.case_count_heading(data-animation="title") PR.#{String(nextProject.caseIndex).padStart(2, '0')}   
+                        h1.case_count_heading(data-animation="title")  PR.#{String(nextProject.caseIndex).padStart(2, '0')}   
+                            br 
                             span.case_total_count /#{String(projects.length).padStart(2, '0')}
                         p.case_name!=nextProject.projectName.replace(/\n/g, '<br>')
 
