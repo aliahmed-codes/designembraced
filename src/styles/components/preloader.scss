@@ -11,6 +11,7 @@
   padding: 2.8rem;
   position: fixed;
   z-index: 2;
+  pointer-events: auto;
 
   .preloader_wrapper {
     @extend %center;

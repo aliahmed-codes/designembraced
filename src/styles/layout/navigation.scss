@@ -13,6 +13,7 @@
   padding: $border-gap;
   height: auto;
   z-index: 2;
+  pointer-events: auto;
 
   .navigation_wrapper {
     @extend %grid-8;

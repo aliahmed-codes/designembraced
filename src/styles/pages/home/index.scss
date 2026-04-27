@@ -71,6 +71,7 @@
 
         .case_gallery_link {
           position: relative;
+          pointer-events: auto;
 
           .case_gallery_media {
             height: 54vh;
