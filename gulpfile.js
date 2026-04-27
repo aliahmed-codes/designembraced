@@ -109,9 +109,14 @@ function serve() {
     watch(paths.allViews, views);
 }
 
+exports.build = series(
+    clean,
+    parallel(styles, scripts, assets)
+);
+
 exports.default = series(
     clean,
-    parallel(styles, scripts, views, assets),
+    parallel(styles, scripts, assets),
     server,
     serve
 );
