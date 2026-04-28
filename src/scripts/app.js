@@ -92,7 +92,7 @@ class App {
             const div = document.createElement('div')
             div.innerHTML = html
             const c = div.querySelector('.content')
-            const nextBg    = c?.getAttribute('data-backgroundColor') || null
+            const nextBg = c?.getAttribute('data-backgroundColor') || null
             const nextColor = c?.getAttribute('data-color') || null
             this.page._initColorTransition(nextBg, nextColor)
         })
@@ -383,6 +383,7 @@ class App {
 
                         transition = {
                             mediaIndex,
+                            clickEvent: event,
                             fromHeadingBounds: headingEl ? headingEl.getBoundingClientRect() : null,
                             fromNameBounds: nameEl ? nameEl.getBoundingClientRect() : null,
                         }

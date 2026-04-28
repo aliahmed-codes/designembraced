@@ -80,7 +80,9 @@ export default class Media {
                 uNormalizedY: { value: 0 },
                 uBulge: { value: 0 },
                 uStrips: { value: 0 },
-                uFlipCurve: { value: 0 }
+                uProgress: { value: 0 },
+                uRipple: { value: 0 },
+                uClickOrigin: { value: new THREE.Vector2(0.5, 0.5) },
             }
         })
     }

@@ -229,51 +229,58 @@ export default class Home {
 
         media.isTransitioning = true
         media.material.uniforms.uNormalizedY.value = 0
+        media.material.uniforms.uProgress.value = 0
 
-        const tl = gsap.timeline({ onComplete })
 
-        // Flip: top goes to bottom, front face goes to back (180° around X axis)
-        tl.to(media.mesh.rotation, {
-            x: Math.PI,
-            duration: 0.55,
-            ease: 'power2.inOut'
+        const tl = gsap.timeline({
+            onComplete: () => {
+                media.isTransitioning = false
+                setTimeout(onComplete?.(), 500)
+            }
+        })
+
+        // Phase 1 — page flip
+        tl.to(media.material.uniforms.uRipple, {
+            value: 1,
+            duration: 1,
+            ease: 'none'
         }, 0)
 
-        // Bow the centre toward the viewer on the way up, relax on the way down
-        tl.to(media.material.uniforms.uFlipCurve, {
-            value: 1, duration: 0.275, ease: 'power2.out'
+        // Phase 1 — page flip
+        tl.to(media.material.uniforms.uProgress, {
+            value: 1,
+            duration: 1.5,
+            ease: 'none'
         }, 0)
-        tl.to(media.material.uniforms.uFlipCurve, {
-            value: 0, duration: 0.275, ease: 'power2.in'
-        }, 0.275)
 
-        // After flip completes, scale and fly to the case banner bounds
-        if (targetBounds && sizes) {
-            const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
-            const targetScaleY = (targetBounds.height / window.innerHeight) * sizes.height
-            const targetX = (-sizes.width / 2) + (targetScaleX / 2) + (targetBounds.left / window.innerWidth) * sizes.width
-            const targetY = (sizes.height / 2) - (targetScaleY / 2) - (targetBounds.top / window.innerHeight) * sizes.height
 
-            tl.to(media.mesh.scale, {
-                x: targetScaleX,
-                y: targetScaleY,
-                duration: 0.65,
-                ease: 'power3.inOut',
-                onUpdate: () => {
-                    media.material.uniforms.uPlaneSizes.value.set(
-                        media.mesh.scale.x,
-                        media.mesh.scale.y
-                    )
-                }
-            }, 0.5)
+        // Phase 2 — scale + fly to case banner bounds
+        const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
+        const targetScaleY = (targetBounds.height / window.innerHeight) * sizes.height
+        const targetX = (-sizes.width / 2) + (targetScaleX / 2) + (targetBounds.left / window.innerWidth) * sizes.width
+        const targetY = (sizes.height / 2) - (targetScaleY / 2) - (targetBounds.top / window.innerHeight) * sizes.height
 
-            tl.to(media.mesh.position, {
-                x: targetX,
-                y: targetY,
-                duration: 0.65,
-                ease: 'power3.inOut'
-            }, 0.5)
-        }
+
+
+        tl.to(media.mesh.position, {
+            x: targetX,
+            y: targetY,
+            duration: 1,
+            ease: 'none'
+        }, 0.2)
+
+        tl.to(media.mesh.scale, {
+            x: targetScaleX,
+            y: targetScaleY,
+            duration: 1,
+            ease: 'none',
+            onUpdate: () => {
+                media.material.uniforms.uPlaneSizes.value.set(
+                    media.mesh.scale.x,
+                    media.mesh.scale.y
+                )
+            }
+        }, 0.4)
     }
 
     addEventListeners() {
