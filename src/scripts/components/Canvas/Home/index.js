@@ -140,7 +140,7 @@ export default class Home {
     }
 
     hide() {
-        console.log('canvas home hide');
+        // console.log('canvas home hide');
 
         map(this.medias, (media) => media.hide());
     }

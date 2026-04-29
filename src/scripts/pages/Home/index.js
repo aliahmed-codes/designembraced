@@ -51,7 +51,7 @@ export default class Home extends Page {
 
     async hide() {
 
-        console.log('dom home hide');
+        // console.log('dom home hide');
 
     }
 

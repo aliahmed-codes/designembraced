@@ -63,13 +63,13 @@ export default class Case {
 
     show() {
 
-        console.log('canvas case show');
+        // console.log('canvas case show');
 
         map(this.medias, (media) => media.show());
     }
 
     hide() {
-        console.log('canvas case show');
+        // console.log('canvas case show');
 
         map(this.medias, (media) => media.hide());
     }
