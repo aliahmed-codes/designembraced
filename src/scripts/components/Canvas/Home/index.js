@@ -102,7 +102,7 @@ export default class Home {
         if (!media) return
         const scrollY = media.bounds.top + media.bounds.height / 2 - window.innerHeight / 2
         this.scroll.current = this.scroll.last = this.scroll.target = scrollY
-        this._centeredMediaIndex = mediaIndex
+        this.centeredMediaIndex = mediaIndex
         // Apply immediately so subsequent getBoundingClientRect calls reflect the correct scroll
         if (this.galleryElements) {
             this.galleryElements.style[this.transformPrefix] = `translateY(${-scrollY}px)`
@@ -174,9 +174,9 @@ export default class Home {
         if (this.isPreloaderActive) {
             // Recalculate init position with fresh bounds from media.onResize
             this.setInitPosition()
-        } else if (this._centeredMediaIndex !== undefined) {
+        } else if (this.centeredMediaIndex !== undefined) {
             // Re-center on the same case with fresh bounds (handles window resize correctly)
-            this.scrollToMedia(this._centeredMediaIndex)
+            this.scrollToMedia(this.centeredMediaIndex)
         } else {
             this.scroll.current = this.scroll.last = savedScroll
         }
@@ -186,7 +186,7 @@ export default class Home {
 
     onWheel({ pixelY }) {
         this.scroll.target += (pixelY * 1.6)
-        this._centeredMediaIndex = undefined
+        this.centeredMediaIndex = undefined
 
         if (this.isPreloaderActive) {
             this.scroll.target = Math.max(this.preloaderInitScroll, this.scroll.target)

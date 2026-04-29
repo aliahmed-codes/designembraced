@@ -28,7 +28,7 @@ void main() {
   vUv = uv;
   vec3 pos = position;
 
-  // ── Phase 2: Page-flip (uProgress 0→1) ──────────────────────────────────
+  // ── Page-flip (uProgress 0→1) ──────────────────────────────────
   if (uProgress > 0.001) {
     float offset = 1.0 - uv.y;
     float smoothProgress = clamp((uProgress - offset * 0.4) / 0.6, 0.0, 1.0);
@@ -53,7 +53,7 @@ void main() {
   }
   // ────────────────────────────────────────────────────────────────────────
 
-  // ── Phase 1: Ripple from click origin (uRipple 0→1) ─────────────────────
+  // ── Ripple from click origin (uRipple 0→1) ─────────────────────
   if (uRipple > 0.001) {
     float rippleRadius = uRipple * 1.6;
     float ringThickness = 0.28;

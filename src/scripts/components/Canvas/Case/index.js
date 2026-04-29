@@ -52,7 +52,7 @@ export default class Case {
     }
 
     recaptureAllBounds() {
-        const scroll = this._currentScroll || 0
+        const scroll = this.currentScroll || 0
         map(this.medias, media => media.createBounds({ sizes: this.sizes, currentScroll: scroll }))
     }
 
@@ -101,7 +101,7 @@ export default class Case {
             }
         })
 
-        // Phase 1 — page flip
+        // page flip
         tl.to(media.material.uniforms.uProgress, {
             value: 1,
             duration: 1.6,
@@ -135,14 +135,14 @@ export default class Case {
 
     onResize(event) {
         this.sizes = event.sizes
-        const scroll = this._currentScroll || 0
+        const scroll = this.currentScroll || 0
         map(this.medias, media => media.onResize({ ...event, currentScroll: scroll }))
     }
 
     // Called each frame by app.js; nextProgress (0–1) is set externally by app.js
     update(scroll) {
         if (!scroll) return
-        this._currentScroll = scroll.current
+        this.currentScroll = scroll.current
 
         const t = performance.now() / 1000
         const next = this.nextProgress || 0
@@ -152,8 +152,8 @@ export default class Case {
 
             // Index 1 = next-project banner: drive it toward the hero position during scroll transition
             if (index === 1 && next > 0) {
-                if (!this._nextStart) this._captureNextState(media, scroll.current, t)
-                this._driveNextBanner(media, next)
+                if (!this.nextStart) this.captureNextState(media, scroll.current, t)
+                this.driveNextBanner(media, next)
                 return
             }
 
@@ -161,17 +161,17 @@ export default class Case {
         })
 
         // Reset captured start state if transition was cancelled
-        if (next <= 0 && this._nextStart) {
-            this._nextStart = null
-            this._nextTarget = null
+        if (next <= 0 && this.nextStart) {
+            this.nextStart = null
+            this.nextTarget = null
         }
     }
 
-    _captureNextState(media, scrollY, t) {
+    captureNextState(media, scrollY, t) {
         // Run a normal update to get the correct current position
         media.update(scrollY, t)
 
-        this._nextStart = {
+        this.nextStart = {
             scaleX: media.mesh.scale.x,
             scaleY: media.mesh.scale.y,
             posX: media.mesh.position.x,
@@ -183,7 +183,7 @@ export default class Case {
         if (!hero) return
         const sw = (hero.bounds.width / window.innerWidth) * this.sizes.width
         const sh = (hero.bounds.height / window.innerHeight) * this.sizes.height
-        this._nextTarget = {
+        this.nextTarget = {
             scaleX: sw,
             scaleY: sh,
             posX: (-this.sizes.width / 2) + (sw / 2) + (hero.bounds.left / window.innerWidth) * this.sizes.width,
@@ -191,16 +191,16 @@ export default class Case {
         }
     }
 
-    _driveNextBanner(media, progress) {
-        if (!this._nextStart || !this._nextTarget) return
+    driveNextBanner(media, progress) {
+        if (!this.nextStart || !this.nextTarget) return
 
         // Smoothstep for a softer feel
         const t = progress * progress * (3 - 2 * progress)
 
-        media.mesh.scale.x = this._nextStart.scaleX + (this._nextTarget.scaleX - this._nextStart.scaleX) * t
-        media.mesh.scale.y = this._nextStart.scaleY + (this._nextTarget.scaleY - this._nextStart.scaleY) * t
-        media.mesh.position.x = this._nextStart.posX + (this._nextTarget.posX - this._nextStart.posX) * t
-        media.mesh.position.y = this._nextStart.posY + (this._nextTarget.posY - this._nextStart.posY) * t
+        media.mesh.scale.x = this.nextStart.scaleX + (this.nextTarget.scaleX - this.nextStart.scaleX) * t
+        media.mesh.scale.y = this.nextStart.scaleY + (this.nextTarget.scaleY - this.nextStart.scaleY) * t
+        media.mesh.position.x = this.nextStart.posX + (this.nextTarget.posX - this.nextStart.posX) * t
+        media.mesh.position.y = this.nextStart.posY + (this.nextTarget.posY - this.nextStart.posY) * t
         media.material.uniforms.uPlaneSizes.value.set(media.mesh.scale.x, media.mesh.scale.y)
     }
 

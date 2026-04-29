@@ -22,24 +22,24 @@ export default class Case extends Page {
         const nextLink = document.querySelector('#case_next_banner_media .case_banner_media_link')
         this.nextHref = nextLink?.href || null
         this.nextScrollProgress = 0
-        this._colorTl = null
+        this.colorTl = null
 
-        this._nextHeadingEl = document.querySelector('.next_case_wrapper .case_count_heading')
-        this._nextNameEl = document.querySelector('.next_case_wrapper .case_name')
+        this.nextHeadingEl = document.querySelector('.next_case_wrapper .case_count_heading')
+        this.nextNameEl = document.querySelector('.next_case_wrapper .case_name')
 
-        this._transitionStartScroll = undefined
-        this._transitionZone = undefined
+        this.transitionStartScroll = undefined
+        this.transitionZone = undefined
 
-        this._nextHeadSpans = this._nextHeadingEl ? splitByLines(this._nextHeadingEl) : []
-        this._nextNameSpans = this._nextNameEl ? splitByLines(this._nextNameEl) : []
+        this.nextHeadSpans = this.nextHeadingEl ? splitByLines(this.nextHeadingEl) : []
+        this.nextNameSpans = this.nextNameEl ? splitByLines(this.nextNameEl) : []
 
-        if (this._nextHeadSpans.length) gsap.set(this._nextHeadSpans, { y: '-100%' })
-        if (this._nextNameSpans.length) gsap.set(this._nextNameSpans, { y: '-100%' })
+        if (this.nextHeadSpans.length) gsap.set(this.nextHeadSpans, { y: '-100%' })
+        if (this.nextNameSpans.length) gsap.set(this.nextNameSpans, { y: '-100%' })
 
-        this._calcTransitionStart()
+        this.calcTransitionStart()
     }
 
-    _calcTransitionStart() {
+    calcTransitionStart() {
         if (!this.nextHref) return
         const img = document.querySelector('#case_next_banner_media img')
         if (!img) return
@@ -50,16 +50,16 @@ export default class Case extends Page {
         const rect = img.getBoundingClientRect()
         if (wrapper && prev !== null) wrapper.style.transform = prev
         // Start transition once the bottom of the next banner reaches the viewport bottom
-        this._transitionStartScroll = Math.max(0, rect.bottom - window.innerHeight)
+        this.transitionStartScroll = Math.max(0, rect.bottom - window.innerHeight)
     }
 
     // Called by app.js once the next page HTML has been pre-fetched
-    _initColorTransition(nextBg, nextColor) {
+    initColorTransition(nextBg, nextColor) {
         if (!nextBg) return
         const body = document.querySelector('body')
         const fromBg = getComputedStyle(body).backgroundColor
         const fromColor = getComputedStyle(body).color
-        this._colorTl = gsap.timeline({ paused: true })
+        this.colorTl = gsap.timeline({ paused: true })
             .fromTo(body,
                 { backgroundColor: fromBg, color: fromColor },
                 { backgroundColor: nextBg, color: nextColor, ease: 'none', duration: 1 },
@@ -90,37 +90,37 @@ export default class Case extends Page {
 
     onResize() {
         super.onResize()
-        this._calcTransitionStart()
+        this.calcTransitionStart()
 
         // Compute zone from actual remaining scroll range so progress always reaches 1
-        if (this._transitionStartScroll !== undefined && this.scroll?.limit) {
-            this._transitionZone = Math.max(1, this.scroll.limit - this._transitionStartScroll)
+        if (this.transitionStartScroll !== undefined && this.scroll?.limit) {
+            this.transitionZone = Math.max(1, this.scroll.limit - this.transitionStartScroll)
         }
     }
 
     update() {
         super.update()
 
-        if (!this.nextHref || this._transitionStartScroll === undefined || device.isTouch) {
+        if (!this.nextHref || this.transitionStartScroll === undefined || device.isTouch) {
             this.nextScrollProgress = 0
             return
         }
 
-        const zone = this._transitionZone || (window.innerHeight * 0.7)
-        const over = Math.max(0, this.scroll.current - this._transitionStartScroll)
+        const zone = this.transitionZone || (window.innerHeight * 0.7)
+        const over = Math.max(0, this.scroll.current - this.transitionStartScroll)
         this.nextScrollProgress = Math.min(1, over / zone)
 
         if (this.nextScrollProgress <= 0) return
 
         // Color crossfade synced with scroll
-        if (this._colorTl) this._colorTl.progress(this.nextScrollProgress)
+        if (this.colorTl) this.colorTl.progress(this.nextScrollProgress)
 
         // Scroll-driven reveal: inner spans slide from y=-100% to y=0 (smoothstep)
         const t = this.nextScrollProgress * this.nextScrollProgress * (3 - 2 * this.nextScrollProgress)
         const yPercent = -100 + 100 * t
 
-        if (this._nextHeadSpans.length) gsap.set(this._nextHeadSpans, { y: `${yPercent}%` })
-        if (this._nextNameSpans.length) gsap.set(this._nextNameSpans, { y: `${yPercent}%` })
+        if (this.nextHeadSpans.length) gsap.set(this.nextHeadSpans, { y: `${yPercent}%` })
+        if (this.nextNameSpans.length) gsap.set(this.nextNameSpans, { y: `${yPercent}%` })
     }
 
     async hide() {

@@ -80,11 +80,11 @@ class App {
 
         this.page.show({ onPreloader: true })
 
-        this._prefetchNextCase()
+        this.prefetchNextCase()
     }
 
     // Pre-fetch the next case page so navigation is instant and colors are available
-    _prefetchNextCase() {
+    prefetchNextCase() {
         if (this.template !== 'case' || !this.page?.nextHref) return
         const url = this.page.nextHref
         this.fetchPage(url).then(html => {
@@ -94,7 +94,7 @@ class App {
             const c = div.querySelector('.content')
             const nextBg = c?.getAttribute('data-backgroundColor') || null
             const nextColor = c?.getAttribute('data-color') || null
-            this.page._initColorTransition(nextBg, nextColor)
+            this.page.initColorTransition(nextBg, nextColor)
         })
     }
 
@@ -115,7 +115,7 @@ class App {
 
 
     async onChange({ url, transition = null }) {
-        this._navigatingToNext = false
+        this.navigatingToNext = false
 
         this.canvas.onChangeStart(this.template)
 
@@ -164,7 +164,7 @@ class App {
                 this.applyHomeTransitionOffsets(transition)
             }
 
-            this._prefetchNextCase()
+            this.prefetchNextCase()
 
             setTimeout(() => {
                 this.onResize()
@@ -310,8 +310,8 @@ class App {
         if (nextProgress !== undefined && this.canvas?.case) {
             this.canvas.case.nextProgress = nextProgress
 
-            if (nextProgress >= 1 && this.page?.nextHref && !this._navigatingToNext) {
-                this._navigatingToNext = true
+            if (nextProgress >= 1 && this.page?.nextHref && !this.navigatingToNext) {
+                this.navigatingToNext = true
                 this.onChange({ url: this.page.nextHref, transition: { fromNextCaseScroll: true } })
             }
         }

@@ -61,7 +61,7 @@ export default class Media {
             if (cached) {
                 this.texture = cached
                 const img = cached.image
-                this._cachedSize = { w: img.naturalWidth || img.width || 0, h: img.naturalHeight || img.height || 0 }
+                this.cachedSize = { w: img.naturalWidth || img.width || 0, h: img.naturalHeight || img.height || 0 }
             } else {
                 this.media = new Image()
                 this.media.crossOrigin = "anonymous"
@@ -81,8 +81,8 @@ export default class Media {
     }
 
     createMaterial() {
-        const w = this._cachedSize?.w || 0
-        const h = this._cachedSize?.h || 0
+        const w = this.cachedSize?.w || 0
+        const h = this.cachedSize?.h || 0
 
         this.material = new THREE.ShaderMaterial({
             vertexShader: vertex,
