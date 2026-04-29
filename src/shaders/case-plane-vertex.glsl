@@ -36,7 +36,12 @@ void main() {
     vec3 center = vec3(0.0, 0.0, 0.1);
     pos =
       rotateX(easeInOutCubic(smoothProgress) * PI) * (pos - center) + center;
-    // pos.y += jump;
+    pos.y += jump;
+
+    float widthFactor = pow(1.0 - uv.y, 2.0); // stronger near bottom
+    float expand = jump * widthFactor;
+
+    pos.x *= 1.0 + expand;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
     return;

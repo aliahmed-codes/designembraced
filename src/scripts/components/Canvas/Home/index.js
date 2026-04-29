@@ -220,16 +220,16 @@ export default class Home {
     }
 
     animateToCase(mediaIndex, targetBounds, sizes, onComplete) {
-        const media = this.medias[mediaIndex]
-
+        const media = this.medias[mediaIndex];
         if (!media) {
-            onComplete?.()
-            return
+            onComplete?.();
+            return;
         }
 
         media.isTransitioning = true
         media.material.uniforms.uNormalizedY.value = 0
         media.material.uniforms.uProgress.value = 0
+        
 
         // Phase 2 — scale + fly to case banner bounds
         const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
@@ -247,36 +247,39 @@ export default class Home {
         // Phase 1 — page flip
         tl.to(media.material.uniforms.uRipple, {
             value: 1,
-            duration: 1,
-            ease: 'none'
-        }, 0)
+            duration: 0.9,
+            ease: "none"
+        }, 0.1);
 
-        // Phase 1 — page flip
+        // Phase 2: Page flip with curl
         tl.to(media.material.uniforms.uProgress, {
             value: 1,
-            duration: 1.5,
-            ease: 'none'
-        }, 0)
+            duration: 1.6,
+            ease: "none"
+        }, 0.2);
 
+        // Phase 2: Fly to position (starts mid-flip)
         tl.to(media.mesh.position, {
             x: targetX,
             y: targetY,
-            duration: 1,
-            ease: 'none'
-        }, 0.2)
+            duration: 1.1,
+            ease: "none"
+        }, 0.4);
 
+        // Phase 2: Scale (slightly delayed for "settling" effect)
         tl.to(media.mesh.scale, {
             x: targetScaleX,
             y: targetScaleY,
             duration: 1,
-            ease: 'none',
+            delay: .5,
+            ease: "none",
             onUpdate: () => {
                 media.material.uniforms.uPlaneSizes.value.set(
                     media.mesh.scale.x,
                     media.mesh.scale.y
-                )
+                );
             }
-        }, 0.4)
+        }, 0.5);
     }
 
     addEventListeners() {

@@ -104,24 +104,25 @@ export default class Case {
         // Phase 1 — page flip
         tl.to(media.material.uniforms.uProgress, {
             value: 1,
-            duration: 1.5,
+            duration: 1.6,
             ease: 'none'
-        }, 0)
+        }, 0.2)
 
 
         // Position flies to gallery slot
         tl.to(media.mesh.position, {
             x: targetX,
             y: targetY,
-            duration: 1,
+            duration: 1.1,
             ease: 'none'
-        }, 0.2)
+        }, 0.4)
 
         // Scale shrinks to gallery size
         tl.to(media.mesh.scale, {
             x: targetScaleX,
             y: targetScaleY,
             duration: 1,
+            delay: .5,
             ease: 'none',
             onUpdate: () => {
                 media.material.uniforms.uPlaneSizes.value.set(
@@ -129,7 +130,7 @@ export default class Case {
                     media.mesh.scale.y
                 )
             }
-        }, 0.4)
+        }, 0.5)
     }
 
     onResize(event) {
