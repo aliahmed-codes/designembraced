@@ -96,6 +96,7 @@ export default class Media {
                 uNormalizedY: { value: 0 },
                 uIdleTime: { value: 0 },
                 uFlipCurve: { value: 0 },
+                uProgress: { value: 0 },
             }
         })
     }

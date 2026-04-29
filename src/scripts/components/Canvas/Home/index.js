@@ -231,6 +231,11 @@ export default class Home {
         media.material.uniforms.uNormalizedY.value = 0
         media.material.uniforms.uProgress.value = 0
 
+        // Phase 2 — scale + fly to case banner bounds
+        const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
+        const targetScaleY = (targetBounds.height / window.innerHeight) * sizes.height
+        const targetX = (-sizes.width / 2) + (targetScaleX / 2) + (targetBounds.left / window.innerWidth) * sizes.width
+        const targetY = (sizes.height / 2) - (targetScaleY / 2) - (targetBounds.top / window.innerHeight) * sizes.height
 
         const tl = gsap.timeline({
             onComplete: () => {
@@ -252,15 +257,6 @@ export default class Home {
             duration: 1.5,
             ease: 'none'
         }, 0)
-
-
-        // Phase 2 — scale + fly to case banner bounds
-        const targetScaleX = (targetBounds.width / window.innerWidth) * sizes.width
-        const targetScaleY = (targetBounds.height / window.innerHeight) * sizes.height
-        const targetX = (-sizes.width / 2) + (targetScaleX / 2) + (targetBounds.left / window.innerWidth) * sizes.width
-        const targetY = (sizes.height / 2) - (targetScaleY / 2) - (targetBounds.top / window.innerHeight) * sizes.height
-
-
 
         tl.to(media.mesh.position, {
             x: targetX,

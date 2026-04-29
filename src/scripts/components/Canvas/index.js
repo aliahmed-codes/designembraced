@@ -149,7 +149,7 @@ export default class Canvas {
     onChangeEnd(template, onPreloader, transition) {
         this.template = template
 
-        const isHomeToCaseTransition = template === 'case' && transition && this.home && !device.isTouch
+        const isHomeToCaseTransition = template === 'case' && transition?.mediaIndex !== undefined && this.home && !device.isTouch
         const isCaseToHomeTransition = template === 'home' && transition && this.case && !device.isTouch
 
         if (template === 'home') {
@@ -157,17 +157,12 @@ export default class Canvas {
             this.addEventListeners()
 
             if (isCaseToHomeTransition) {
-                // Scroll home gallery to center the case we came from (applies DOM transform immediately)
                 this.home.scrollToMedia(transition.mediaIndex)
 
-                // Hide the specific gallery media — case banner plane animates to it
                 if (this.home?.medias?.[transition.mediaIndex]) {
                     this.home.medias[transition.mediaIndex].mesh.visible = false
                 }
 
-                // Compute viewport bounds from stored document coords + current scroll
-                // (gallery DOM is now scrolled so getBoundingClientRect would also work,
-                //  but using bounds directly avoids any reflow)
                 const media = this.home.medias[transition.mediaIndex]
                 const scrollY = this.home.scroll.current
                 const targetBounds = media ? {
@@ -177,12 +172,18 @@ export default class Canvas {
                     height: media.bounds.height,
                 } : null
 
-                this.case.animateToBounds(0, targetBounds, this.sizes, () => {
-                    this.destroyCase()
-                    if (this.home?.medias?.[transition.mediaIndex]) {
-                        this.home.medias[transition.mediaIndex].mesh.visible = true
-                    }
-                })
+                this.case.animateToBounds(
+                    0,
+                    targetBounds,
+                    this.sizes,
+                    () => {
+                        this.destroyCase()
+                        if (this.home?.medias?.[transition.mediaIndex]) {
+                            this.home.medias[transition.mediaIndex].mesh.visible = true
+                        }
+                    },
+                    transition.clickEvent ?? null  // ← pass click event
+                )
             }
         } else if (this.home && !isHomeToCaseTransition) {
             this.destroyHome()
@@ -194,7 +195,6 @@ export default class Canvas {
                 this.createCase()
 
                 if (isHomeToCaseTransition) {
-                    // Hide case banner while home media flips and scales to it
                     if (this.case?.medias?.[0]) {
                         this.case.medias[0].mesh.visible = false
                     }
@@ -211,14 +211,18 @@ export default class Canvas {
                             if (this.case?.medias?.[0]) {
                                 this.case.medias[0].mesh.visible = true
                             }
-                        }
+                        },
+                        transition.clickEvent ?? null  // ← pass click event
                     )
+
+                    if (this.case) this.case.show()
+                    if (this.about) this.about.show()
+                    return  // ← skip this.show() below
                 }
+
             } else if (this.case && !isCaseToHomeTransition) {
-                // Keep case canvas alive during reverse transition — animateToBounds destroys it
                 this.destroyCase()
             }
-
 
             if (template === 'about') {
                 this.createAbout()
