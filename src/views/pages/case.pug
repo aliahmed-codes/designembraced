@@ -43,7 +43,7 @@ block content
                             .case_media
                                 if media._type === 'image'
                                     figure.case_media_media
-                                        img.case_media_media_image(src=imageUrl(media.asset), alt='')
+                                        img.case_media_media_image(src=imageUrl(media.asset), alt='', width=media.asset.dimensions && media.asset.dimensions.width, height=media.asset.dimensions && media.asset.dimensions.height)
 
                                 else if media._type === 'videoItem'
                                     video.case_media_media(autoplay muted loop)

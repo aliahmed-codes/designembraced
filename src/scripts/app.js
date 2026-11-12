@@ -9,6 +9,7 @@ import Preloader from "./components/Preloader"
 import normalizeWheel from "normalize-wheel"
 import Canvas from "./components/Canvas"
 import device from "./classes/DeviceDetection"
+import observeMediaLayout from "./utils/observeMediaLayout"
 
 class App {
 
@@ -65,6 +66,20 @@ class App {
         this.page = this.pages[this.template]
 
         this.page.create()
+        this.observeCaseLayout()
+    }
+
+    observeCaseLayout() {
+        this.stopObservingLayout?.()
+        this.stopObservingLayout = null
+        if (this.template !== 'case') return
+        const page = this.page
+        const wrapper = page.elements.wrapper
+        this.stopObservingLayout = observeMediaLayout(wrapper, () => {
+            // Update scroll limits and next-case thresholds together with WebGL bounds.
+            page.onResize()
+            this.canvas.case?.recaptureAllBounds()
+        })
     }
 
 
@@ -145,6 +160,7 @@ class App {
             })
             this.content.setAttribute('data-template', this.template)
 
+            this.stopObservingLayout?.()
             this.content.innerHTML = divContent.innerHTML
 
             // Case transition offsets must be set before canvas setup (hero banner is measured there)
@@ -157,6 +173,7 @@ class App {
             this.page = this.pages[this.template]
 
             this.page.create()
+            this.observeCaseLayout()
 
             // Home offsets applied AFTER canvas.onChangeEnd so gallery is already scrolled
             // to the correct case slot — getBoundingClientRect then returns correct positions

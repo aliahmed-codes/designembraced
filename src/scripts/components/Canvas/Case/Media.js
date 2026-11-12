@@ -42,10 +42,8 @@ export default class Media {
             this.texture.magFilter = THREE.LinearFilter
 
             const onMetadata = () => {
-                this.material.uniforms.uImageSizes.value.set(
-                    this.element.videoWidth,
-                    this.element.videoHeight
-                )
+                this.cachedSize = { w: this.element.videoWidth, h: this.element.videoHeight }
+                this.material?.uniforms.uImageSizes.value.set(this.cachedSize.w, this.cachedSize.h)
                 if (this.onVideoReady) this.onVideoReady()
             }
 
@@ -65,7 +63,6 @@ export default class Media {
             } else {
                 this.media = new Image()
                 this.media.crossOrigin = "anonymous"
-                this.media.src = this.element.src
 
                 this.texture = new THREE.Texture(this.media)
 
@@ -76,6 +73,7 @@ export default class Media {
                         this.media.naturalHeight
                     )
                 }
+                this.media.src = this.element.src
             }
         }
     }

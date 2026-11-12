@@ -5,13 +5,13 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 
 const { createClient } = require('@sanity/client')
-const imageUrlBuilder = require('@sanity/image-url').default
 
 
 const app = express();
-const port = 3000
+const port = process.env.PORT || 3000
 
 
+app.engine('pug', require('pug').__express);
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -31,7 +31,7 @@ const client = createClient({
 /**
  * Image builder.
  */
-const builder = imageUrlBuilder(client)
+let builder
 
 
 const imageHandle = (source) => {
@@ -75,6 +75,11 @@ const buildPages = (projects) => {
  */
 
 const requestHandle = async () => {
+    // image-url v2 is ESM; import it asynchronously for serverless CommonJS runtimes.
+    if (!builder) {
+        const { createImageUrlBuilder } = await import('@sanity/image-url')
+        builder = createImageUrlBuilder(client)
+    }
     const home = await client.fetch(`*[_type == "home"][0]`);
     const about = await client.fetch(`
     *[_type == "about"][0]{
@@ -174,7 +179,8 @@ app.get('/case/:id', async (req, res) => {
     layout,
     asset->{
       _id,
-      url
+      url,
+      "dimensions": metadata.dimensions
     }
   }
 },
@@ -203,6 +209,10 @@ app.get('/case/:id', async (req, res) => {
 
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server running on http://localhost:${port}`);
+    });
+}
+
+module.exports = app;

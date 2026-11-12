@@ -37,3 +37,6 @@ temp/
 
 # 🔑 Sanity (important)
 .sanity/
+.vercel/
+.vercel
+.env*
